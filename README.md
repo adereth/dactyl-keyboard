@@ -1,7 +1,7 @@
 # dactyl-cave
 The Dactyl Cave is a a parameterized, split-hand, concave, columnar, ergonomic keyboard.
 
-You can see the model [here](blob/master/things/one-piece-left.stl).
+You can see the model [here](things/one-piece-left.stl).
 
 ## Assembly
 
