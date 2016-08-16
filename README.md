@@ -8,9 +8,9 @@ The Dactyl is a parameterized, split-hand, concave, columnar, ergonomic keyboard
 ### Generating a Design
 
 **Setting up the Clojure environment**
-* [Download and install the Clojure runtime](https://clojure.org)
-* [Download and install the Leiningen project manager](http://leiningen.org/)
-* [Download and install OpenSCAD](http://www.openscad.org/)
+* [Install the Clojure runtime](https://clojure.org)
+* [Install the Leiningen project manager](http://leiningen.org/)
+* [Install OpenSCAD](http://www.openscad.org/)
 
 **Generating the design**
 * Run `lein repl`
