@@ -6,7 +6,24 @@ The Dactyl is a parameterized, split-hand, concave, columnar, ergonomic keyboard
 ## Assembly
 
 ### Generating a Design
-TODO
+
+**Setting up the Clojure environment**
+* [Install the Clojure runtime](https://clojure.org)
+* [Install the Leiningen project manager](http://leiningen.org/)
+* [Install OpenSCAD](http://www.openscad.org/)
+
+**Generating the design**
+* Run `lein repl`
+* Load the file `(load-file "src/dactyl_keyboard/dactyl.clj")`
+* This will regenerate the `things/*.scad` files
+* Use OpenSCAD to open a `.scad` file.
+* Make changes to design, repeat `load-file`, OpenSCAD will watch for changes and rerender.
+* When done, use OpenSCAD to export STL files
+
+**Tips**
+* [Some other ways to evaluate the clojure design file](http://stackoverflow.com/a/28213489)
+* [Example designing with clojure](http://adereth.github.io/blog/2014/04/09/3d-printing-with-clojure/)
+
 
 ### Printing
 Pregenerated STL files are available in the [things/](things/) directory.
