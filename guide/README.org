@@ -2,7 +2,8 @@
    Get all the parts / raw material
    - For the 3D printing there are two options:
      1. Filament, which is the basis for 3D printing. Luckily I could print at my work-place
-        which reduced the cost from 210€ to 70€
+        which reduced the cost from 210€ to 70€. The kind of filament you need depends on the 3D
+        printer you have available.
      2. Buy the printout of adareth's model at shapeways for 210€ over here
         http://www.shapeways.com/designer/adereth/creations
    - Decide on the switches
@@ -19,7 +20,7 @@
        massdrop which is way different from usual online-stores. If you find a site that sells
        these make sure you get the right amount and type of keys according to the layout
      - I got the "TKL Base Set + TKL Modifier" from over here:
-       http://pimpmykeyboard.com/dsa-pbt-abs-blank-keycap-sets/ but I'm still too long keys
+       http://pimpmykeyboard.com/dsa-pbt-abs-blank-keycap-sets/ but I'm still two long keys
        short, I will have to order those specifically and I have a bunch of keys I don't use
        left-over.
    - The USB-Cable that connects the keyboard to your computer
@@ -27,12 +28,12 @@
        really makes handling the keyboard so much more comfortable
      - https://www.amazon.de/gp/product/B00NH11N5A/
    - The main controller (right half)
-     - A Teensy 2.0, i got that one from here: https://www.pjrc.com/store/teensy.html
+     - A Teensy 2.0, I got that one from here: https://www.pjrc.com/store/teensy.html
    - The chip, connectors and cable to give life to the left half
      - TTRS cable and jacks
        - Got my TTRS cable from here: http://www.digikey.de/product-search/de?keywords=839-1257-ND
        - Got my TTRS jacks from here: http://www.digikey.de/product-search/de?keywords=CP-43514-ND
-     - MCP23018 16 bitIO Expander
+     - MCP23018 16 bit IO Expander
        - Got mine from here: http://www.digikey.de/product-search/de?keywords=MCP23018-E%2FSP-ND
 
    What I spend on my keyboard (should give you a rough estimate for your build):
@@ -59,60 +60,99 @@
    Depending on what you have available you might spend more or less money than me, 300€ however
    is a good rough estimate.
 
-* Dactyl Flexible PCB Rough Guide
+   After all the parts have arrived it is safe to move on to the next section
 
-[[workbench.jpg]]
-For now, take a look at the images and try to figure things out, I know
-that's not great (it's better than nothing!)
+* Wiring
+  1) Plug the switches into the Casing, no glue is needed, the casing provides the perfect fit.
+  2) Put the keycaps on the switches
 
-** Making the PCB
+  [[file:switches_still_in_bag.jpg]]
 
-Get two sheets of 6in square Pyralux™. Use the Toner Transfer method to
-etch the Pyralux sheets as you would a usual PCB
+  [[file:]]switches_applied_to_casing.jpg
 
-#+BEGIN_QUOTE
-  NOTE: If you only have an Inkjet make photocopies of the print out,
-  voilà Toner based copies!
-#+END_QUOTE
+  Now going further on in the guide there are two options
+  1. The first option is to print flexible PCBs. The advantage is that you save alot of wiring
+     business, everything looks rather clean and you dont have to worry about your cables being too
+     thick such that the casing doesnt close. However if you don't have the means to print out such
+     PCBs there is the second option, hand-wiring everything by hand.
+     - The guide for this is very rough indeed and it doesnt include the firmware used. Wiring and
+       firmware play extremely close together, wiring before knowing your firmware is like buying a
+       shoe without measuring your feet before. For this option information about the exact
+       firmware is not published, this in addition to the fact that the pictures in this rough
+       guide are incomplete makes this option extremely beginner-unfriendly. Going in blind-sided
+       like this may lead to one of these things:
+       1. reprogramming huge parts of the firmware to match your wiring which comes with a ton of
+          debugging
+       2. rewiring to adapt to what the firmware expects, which may easily double your work here
+     - [[Route 1: Dactyl Flexible PCB Rough Guide]]
+  2. The second option is to hand-wire everything. For people like me who had never soldered before
+     this was great joy and pleasure.
+     - Here too firmware and wiring go hand in hand, you pretty much have to have a detailed look
+       at the firmware you are using before wiring anything. I provide my modification of the
+       "ergodox-firmware" over here: https://github.com/BubblesToTheLimit/ergodox-firmware
+     - Some of the steps of this guide may not be described in much detail, but in contrast to the
+       first guide there is a whole lot more of information.
+     - [[Route 2: Dactyl Hand-Wiring Guide]]
 
-[[http://www.instructables.com/id/Toner-transfer-no-soak-high-quality-double-sided/][Here'sa handy toner transfer guide ...]]
+** Route 1: Dactyl Flexible PCB Rough Guide
+   [[workbench.jpg]]
 
-Print these PCB designs out...
+   For now, take a look at the images and try to figure things out, I know that's not great (it's
+   better than nothing!)
 
-Left hand:
-[[left-hand-pcb-pyralux.png]]
+*** Making the PCB
+    Get two sheets of 6in square Pyralux™. Use the Toner Transfer method to etch the Pyralux sheets as
+    you would a usual PCB
 
-Right hand:
-[[right-hand-pcb-pyralux.png]]
+    #+BEGIN_QUOTE
+    NOTE: If you only have an Inkjet make photocopies of the print out,
+    voilà Toner based copies!
+    #+END_QUOTE
 
-When you're done etching, you'll need to carefully cut the pcb into
-pieces... See the images below.
+    [[http://www.instructables.com/id/Toner-transfer-no-soak-high-quality-double-sided/][Here'sa handy toner transfer guide ...]]
 
-** This is Madness...
+    Print these PCB designs out...
 
-The thumb cluster pcb for the left hand:
-[[madness.jpg]]
+    Left hand:
 
-Solder the MCP like so:
-[[left-hand-mcp-1.jpg]]
-[[left-hand-mcp-2.jpg]]
+    [[left-hand-pcb-pyralux.png]]
 
-Solder the Teensy 2.0 like so:
-[[teensy-1.jpg]]
+    Right hand:
 
-Some interesting pull up 10k resistor business here... (TODO add a small
-diagram and notes)
+    [[right-hand-pcb-pyralux.png]]
 
-[[teensy-2-fuxor-reziztorrs.jpg]]
+    When you're done etching, you'll need to carefully cut the pcb into pieces... See the images
+    below.
 
-Each hand of the keyboard will wire up like so:
-[[right-hand-pcb-1.jpg]]
+*** Applying the PCB to the electronical parts
+    The thumb cluster pcb for the left hand:
 
-Teensy goes here... note the rows soldered to the teensy via the
-Pyralux:
-[[right-hand-pcb-with-teensy.jpg]]
+    [[madness.jpg]]
 
-Here the left hand:
-[[hotglue-left-hand.jpg]]
+    Solder the MCP like so:
 
-That's all for now, this guide will improve over time! (TODO!)
+    [[left-hand-mcp-1.jpg]]
+    [[left-hand-mcp-2.jpg]]
+
+    Solder the Teensy 2.0 like so:
+
+    [[teensy-1.jpg]]
+
+    Some interesting pull up 10k resistor business here... (TODO add a small diagram and notes)
+
+    [[teensy-2-fuxor-reziztorrs.jpg]]
+
+    Each hand of the keyboard will wire up like so:
+
+    [[right-hand-pcb-1.jpg]]
+
+    Teensy goes here... note the rows soldered to the teensy via the Pyralux:
+
+    [[right-hand-pcb-with-teensy.jpg]]
+
+    Here the left hand:
+
+    [[hotglue-left-hand.jpg]]
+
+    That's all for now, this guide will improve over time! (TODO!)
+** Route 2: Dactyl Hand-Wiring Guide
