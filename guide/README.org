@@ -1,74 +1,77 @@
 * Preparation and Cost
-   Get all the parts / raw material
-   - For the 3D printing there are two options:
-     1. Filament, which is the basis for 3D printing. Luckily I could print at my work-place
-        which reduced the cost from 210€ to 70€. The kind of filament you need depends on the 3D
-        printer you have available.
-     2. Buy the printout of adareth's model at shapeways for 210€ over here
-        http://www.shapeways.com/designer/adereth/creations
-   - Decide on the switches
-     - If you are going to invest a whole lot of time and money for a custom keyboard instead of
-       buying one for 10€ I'd recommend to use your favorite switch-type. To make a
-       well-informed decision I bought a switch-tester for this from massdrop and decided on
-       Cherry MX Whites. https://www.massdrop.com/buy/varmilo-switch-tester-with-anodized-case
-     - I ordered 70 Cherry MX Whites from here:
-       https://mechanicalkeyboards.com/shop/index.php?l=product_detail&p=847
-   - Decide on the key caps
-     - On the glamour-Shot you can see the 1976 keycap set, it used to be sold over here:
-       http://pimpmykeyboard.com/sa-1976-keycap-set/ but the link is dead right now. You could
-       try this link: https://www.massdrop.com/buy/nineteenseventysix-sa-keycap-set but it is a
-       massdrop which is way different from usual online-stores. If you find a site that sells
-       these make sure you get the right amount and type of keys according to the layout
-     - I got the "TKL Base Set + TKL Modifier" from over here:
-       http://pimpmykeyboard.com/dsa-pbt-abs-blank-keycap-sets/ but I'm still two long keys
-       short, I will have to order those specifically and I have a bunch of keys I don't use
-       left-over.
-   - The USB-Cable that connects the keyboard to your computer
-     - It's an USB 2.0 to USB Mini-B cable, make sure you get one that is 2 meters long, it
-       really makes handling the keyboard so much more comfortable
-     - https://www.amazon.de/gp/product/B00NH11N5A/
-   - The main controller (right half)
-     - A Teensy 2.0, I got that one from here: https://www.pjrc.com/store/teensy.html
-   - The chip, connectors and cable to give life to the left half
-     - TTRS cable and jacks
-       - Got my TTRS cable from here: http://www.digikey.de/product-search/de?keywords=839-1257-ND
-       - Got my TTRS jacks from here: http://www.digikey.de/product-search/de?keywords=CP-43514-ND
-     - MCP23018 16 bit IO Expander
-       - Got mine from here: http://www.digikey.de/product-search/de?keywords=MCP23018-E%2FSP-ND
+  Get all the parts / raw material
+  - For the 3D printing there are two options:
+    1. Filament, which is the basis for 3D printing. Luckily I could print at my work-place
+       which reduced the cost from 210€ to 70€. The kind of filament you need depends on the 3D
+       printer you have available.
+    2. Buy the printout of adareth's model at shapeways for 210€ over here
+       http://www.shapeways.com/designer/adereth/creations
+  - Decide on the switches
+    - If you are going to invest a whole lot of time and money for a custom keyboard instead of
+      buying one for 10€ I'd recommend to use your favorite switch-type. To make a
+      well-informed decision I bought a switch-tester for this from massdrop and decided on
+      Cherry MX Whites. https://www.massdrop.com/buy/varmilo-switch-tester-with-anodized-case
+    - I ordered 70 Cherry MX Whites from here:
+      https://mechanicalkeyboards.com/shop/index.php?l=product_detail&p=847
+  - Decide on the key caps
+    - On the glamour-Shot you can see the 1976 keycap set, it used to be sold over here:
+      http://pimpmykeyboard.com/sa-1976-keycap-set/ but the link is dead right now. You could
+      try this link: https://www.massdrop.com/buy/nineteenseventysix-sa-keycap-set but it is a
+      massdrop which is way different from usual online-stores. If you find a site that sells
+      these make sure you get the right amount and type of keys according to the layout
+    - I got the "TKL Base Set + TKL Modifier" from over here:
+      http://pimpmykeyboard.com/dsa-pbt-abs-blank-keycap-sets/ but I'm still two long keys
+      short, I will have to order those specifically and I have a bunch of keys I don't use
+      left-over.
+  - The USB-Cable that connects the keyboard to your computer
+    - It's an USB 2.0 to USB Mini-B cable, make sure you get one that is 2 meters long, it
+      really makes handling the keyboard so much more comfortable
+    - https://www.amazon.de/gp/product/B00NH11N5A/
+  - The main controller (right half)
+    - A Teensy 2.0, I got that one from here: https://www.pjrc.com/store/teensy.html
+  - The chip, connectors and cable to give life to the left half
+    - TTRS cable and jacks
+      - Got my TTRS cable from here: http://www.digikey.de/product-search/de?keywords=839-1257-ND
+      - Got my TTRS jacks from here: http://www.digikey.de/product-search/de?keywords=CP-43514-ND
+    - MCP23018 16 bit IO Expander
+      - Got mine from here: http://www.digikey.de/product-search/de?keywords=MCP23018-E%2FSP-ND
 
-   What I spend on my keyboard (should give you a rough estimate for your build):
-   | item                              | cost |
-   |-----------------------------------+------|
-   | filament                          |   70 |
-   | switch-tester                     |   30 |
-   | key-caps                          |   70 |
-   | teensy 2.0                        |   30 |
-   | switches                          |   60 |
-   | usb cable                         |   10 |
-   | IO Expander, TTRS jacks and cable |   30 |
-   |-----------------------------------+------|
-   | overall cost                      |  300 |
-   #+TBLFM: @9$2=vsum(@2$2..@8$2)
+  What I spend on my keyboard (should give you a rough estimate for your build):
+  | item                              | cost |
+  |-----------------------------------+------|
+  | filament                          |   70 |
+  | switch-tester                     |   30 |
+  | key-caps                          |   70 |
+  | teensy 2.0                        |   30 |
+  | switches                          |   60 |
+  | usb cable                         |   10 |
+  | IO Expander, TTRS jacks and cable |   30 |
+  |-----------------------------------+------|
+  | overall cost                      |  300 |
+  #+TBLFM: @9$2=vsum(@2$2..@8$2)
 
-   My choices / advantages:
-   - Using the soldering iron at the uni-workshop for free
-   - 76 Diodes for free
-   - Soldering wire and copper for free
-   - All the resistors used for free (5 resistors are used)
-   - Several files for working out the rough edges of the 3D-printout
+  My choices / advantages:
+  - Using the soldering iron at the uni-workshop for free
+  - 76 Diodes for free
+  - Soldering wire and copper for free
+  - All the resistors used for free (5 resistors are used)
+  - Several files for working out the rough edges of the 3D-printout
 
-   Depending on what you have available you might spend more or less money than me, 300€ however
-   is a good rough estimate.
+  Depending on what you have available you might spend more or less money than me, 300€ however
+  is a good rough estimate.
 
-   After all the parts have arrived it is safe to move on to the next section
+  After all the parts have arrived it is safe to move on to the next section.
 
 * Wiring
+  It is assumed that you have printed the casing successfully, I had alot of help for this so I'm
+  not going into advice on 3D printing here.
+
   1) Plug the switches into the Casing, no glue is needed, the casing provides the perfect fit.
   2) Put the keycaps on the switches
+     - Note that in the pictures here some of the long keys on the thumb-part are too short,
+       that's why it doesnt look symmetrical
 
-  [[file:switches_still_in_bag.jpg]]
-
-  [[file:]]switches_applied_to_casing.jpg
+  [[file:application-of-switches-and-caps.jpg]]
 
   Now going further on in the guide there are two options
   1. The first option is to print flexible PCBs. The advantage is that you save alot of wiring
@@ -86,12 +89,12 @@
        2. rewiring to adapt to what the firmware expects, which may easily double your work here
      - [[Route 1: Dactyl Flexible PCB Rough Guide]]
   2. The second option is to hand-wire everything. For people like me who had never soldered before
-     this was great joy and pleasure.
+     this was great pain and pleasure.
      - Here too firmware and wiring go hand in hand, you pretty much have to have a detailed look
        at the firmware you are using before wiring anything. I provide my modification of the
        "ergodox-firmware" over here: https://github.com/BubblesToTheLimit/ergodox-firmware
-     - Some of the steps of this guide may not be described in much detail, but in contrast to the
-       first guide there is a whole lot more of information.
+     - Some of the steps of this guide may not be described in much detail, but in contrast to
+       option one there is a whole lot more of information.
      - [[Route 2: Dactyl Hand-Wiring Guide]]
 
 ** Route 1: Dactyl Flexible PCB Rough Guide
