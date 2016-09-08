@@ -159,3 +159,18 @@
 
     That's all for now, this guide will improve over time! (TODO!)
 ** Route 2: Dactyl Hand-Wiring Guide
+   Step 1: Creating the rows
+
+   Using the copper wire you solder each row together, notice how the thumb-part gets its own
+   row. If you take a close look you can see how I did do a messy job soldering, I had to redo
+   some of the parts because they wouldn't be stable enough. Do this for both sides. Which ones of
+   the pins you chose for the row doesnt matter, but for it to look clean you should decide for
+   either one of them
+
+   [[file:wiring_create_rows.jpg]]
+
+   [[file:wiring-create-rows-both-sides.jpg]]
+
+   Because this was my first soldering job i went ahead and tested each one of the 70 switches.
+
+   [[file:wiring-create-rows-testing.jpg]]
