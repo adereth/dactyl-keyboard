@@ -161,70 +161,78 @@
 
     That's all for now, this guide will improve over time! (TODO!)
 ** Route 2: Dactyl Hand-Wiring Guide
-   Step 1: Creating the rows
+*** Step 1: Creating the rows
+    Using the copper wire you solder each row together, notice how the thumb-part gets its own
+    row. If you take a close look you can see how I did do a messy job soldering, I had to redo
+    some of the parts because they weren't soldered properly. Do this for both sides. Which ones of
+    the pins you chose for the row doesnt matter, but for it to look clean you should decide for
+    either one of them
 
-   Using the copper wire you solder each row together, notice how the thumb-part gets its own
-   row. If you take a close look you can see how I did do a messy job soldering, I had to redo
-   some of the parts because they wouldn't be stable enough. Do this for both sides. Which ones of
-   the pins you chose for the row doesnt matter, but for it to look clean you should decide for
-   either one of them
+    [[file:wiring_create_rows.jpg]]
 
-   [[file:wiring_create_rows.jpg]]
+    [[file:wiring-create-rows-both-sides.jpg]]
 
-   [[file:wiring-create-rows-both-sides.jpg]]
+    You might want to go ahead and test each one of the 70 switches with a multimeter.
 
-   You might want to go ahead and test each one of the 70 switches with a multimeter.
+    [[file:wiring-create-rows-testing.jpg]]
 
-   [[file:wiring-create-rows-testing.jpg]]
+*** Step 2: Create the columns
+    The next step is to create the columns by soldering the diodes.
 
-   The next step is to create the columns by soldering the diodes. Notice which way these diodes
-   are directed here, the way these diodes are directed, we have to have a firmware that "drives
-   the rows". (TODO: insert diagram here) Luckily in our firmware "ergodox-firmware" we have the
-   option that adapts to that. However if you want to try and use the "tmk_keyboard" firmware
-   which seems to be also interesting you want to wire the diodes the other way. This way the
-   "columns are driving". As a side note, for some reason the tmk_keyboard firmware things of rows
-   as columns and the other way around, so if you look through the source code it will also see
-   "drive rows", even though that means "driving columns".
+    Notice which way these diodes are directed here. First of all, they are all wired with the
+    black part towards the switch, it is important that you follow that pattern for all of the
+    switches. The end where that color-mark is denotes the direction of the diode. The way these
+    diodes are directed, we have to have a firmware that "drives the rows", which means the
+    electricity can go from the column through the pressed switch through the row, but not the
+    other way around (TODO: insert diagram here to explain this further).
 
-   The tmk_keyboard firmware could also be used for this kind of wiring, but it would have to be
-   rewritten, maybe in a beautiful way, such that it can also "drive rows". However I didnt go
-   ahead and perfomed that rewriting, so I had to stick with the "ergodox-firmware". In retrospect
-   I'd wish I had wired the diodes the other way around.
+    Luckily in our firmware "ergodox-firmware" we have the option that adapts to that. However if
+    you want to try and use the "tmk_keyboard" firmware which seems to be also interesting you
+    want to wire the diodes the other way. This way the "columns are driving". As a side note, for
+    some reason the tmk_keyboard firmware things of rows as columns and the other way around, so
+    if you look through the source code it will also see "drive rows", even though that means
+    "driving columns".
 
-   The first picture doesnt show how the 6 thumb-keys are actually individually connected to the 6
-   main columns.
+    The tmk_keyboard firmware could also be used for this kind of wiring, but it would have to be
+    rewritten, maybe in a beautiful way, such that it can also "drive rows". However I didnt go
+    ahead and perfomed that rewriting, so I had to stick with the "ergodox-firmware". In retrospect
+    I'd wish I had wired the diodes the other way around.
 
-   [[file:wiring-create-columns-left.jpg]]
+    The first picture doesnt show how the 6 thumb-keys are actually individually connected to the 6
+    main columns.
 
-   This second picture shows how the 6 thumb-keys are actually connected to the 6 main columns.
+    [[file:wiring-create-columns-left.jpg]]
 
-   [[file:wiring-create-columns-right.jpg]]
+    This second picture shows how the 6 thumb-keys are actually connected to the 6 main columns.
 
-   TODO: Insert diagram of how the thumb-keys are connected to the main clumns.
+    [[file:wiring-create-columns-right.jpg]]
 
-   The next step is to wire the Teensy 2.0 and the MCP 23018 in place.
-   Everything necessary for that really is the following circuit diagram
+    TODO: Insert diagram of how the thumb-keys are connected to the main clumns.
 
-   [[file:circuit-diagram.svg]]
+*** Put the Teensy and the MCP in place
+    This next step is to wire the Teensy 2.0 and the MCP 23018 in place.
+    Everything necessary for that really is the following circuit diagram
 
-   [[file:rows-and-columns-connected-to-chips.jpg]]
+    [[file:circuit-diagram.png]]
 
-   Things to note here:
-   - The columns for the MCP go from 0 to 6, the columns for the Teensy go from 7 to D (counting
-     in hexadecimal) which makes great sence, since the MCP is left to the Teensy and we read from
-     left to right.
-   - When debugging this and using the ergodox-firmware, both sides have to be wired completely
-     and actually connected, dont expect the keyboard to work before that. The reason being is how
-     the ergodox-firmware stops completely if either the Teensy or the MCP weren't initiated
-     properly.
-   - In the circuit-diagram the columns on the left side (MCP side) actually go from GPA5 to INTA
-     (TODO: Update the circuit diagram and get rid of this point)
-   - The LEDs are handy for debugging, definately go ahead and connect those. When the keyboard
-     starts successfully two of the LEDs light up shortly.
-   - From the Teensy over to the MCP go exactly 4 connections. The blue, the red and the two green
-     ones. This is done using the TTRS jacks and cable (TODO: Add picture here how the jacks are
-     wired)
-   - Yes, the connection from B4 to VCC doesnt seem to make any sense, but the B4 port actually
-     gets used directly in the ergodox-firmware, so just connect those connections that make no
-     sense on first sight and either dont question it or find out why this is necessary by going
-     through the firmware in great detail.
+    [[file:rows-and-columns-connected-to-chips.jpg]]
+
+    Things to note here:
+    - The columns for the MCP go from 0 to 6, the columns for the Teensy go from 7 to D (counting
+      in hexadecimal) which makes great sence, since the MCP is left to the Teensy and we read from
+      left to right.
+    - When debugging this and using the ergodox-firmware, both sides have to be wired completely
+      and actually connected, dont expect the keyboard to work before that. The reason being is how
+      the ergodox-firmware stops completely if either the Teensy or the MCP weren't initiated
+      properly.
+    - In the circuit-diagram the columns on the left side (MCP side) actually go from GPA5 to INTA
+      (TODO: Update the circuit diagram and get rid of this point)
+    - The LEDs are handy for debugging, definately go ahead and connect those. When the keyboard
+      starts successfully two of the LEDs light up shortly.
+    - From the Teensy over to the MCP go exactly 4 connections. The blue, the red and the two green
+      ones. This is done using the TTRS jacks and cable (TODO: Add picture here how the jacks are
+      wired)
+    - Yes, the connection from B4 to VCC doesnt seem to make any sense, but the B4 port actually
+      gets used directly in the ergodox-firmware, so just connect those connections that make no
+      sense on first sight and either dont question it or find out why this is necessary by going
+      through the firmware in great detail.
