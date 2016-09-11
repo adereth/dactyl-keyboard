@@ -177,14 +177,10 @@
     [[file:wiring-create-rows-testing.jpg]]
 
 *** Step 2: Create the columns
-    The next step is to create the columns by soldering the diodes.
-
-    Notice which way these diodes are directed here. First of all, they are all wired with the
-    black part towards the switch, it is important that you follow that pattern for all of the
-    switches. The end where that color-mark is denotes the direction of the diode. The way these
-    diodes are directed, we have to have a firmware that "drives the rows", which means the
-    electricity can go from the row through the pressed key-switches to the columns, but not the
-    other way around.
+    The next step is to create the columns by soldering the diodes. There are two options for
+    soldering the diodes. The end where that color-mark is denotes the direction of the diode. The
+    way these diodes are directed is crucial for the algorithm that detects the
+    key-press. Detecting the key-press can be done in two ways, row- or column-driven.
 
     These following sketches are supposed to make the two "driving"-options the ergodox-firmware
     has more clear.
@@ -195,18 +191,17 @@
 
     Luckily in our firmware "ergodox-firmware" we have the option that adapts to that. However if
     you want to try and use the "tmk_keyboard" firmware which seems to be also interesting you
-    want to wire the diodes the other way. This way the "columns are driving". As a side note, for
-    some reason the tmk_keyboard firmware thinks of rows as columns and the other way around, so
-    if you look through the source code it will also see "drive rows", even though that means
-    "driving columns".
+    want to wire the diodes the other way. This way the "columns are driving". As a side note, if
+    I understand it correctly the tmk_keyboard firmware thinks of rows as columns and the other
+    way around.
 
     The tmk_keyboard firmware could also be used for this kind of wiring, but it would have to be
     rewritten, maybe in a beautiful way, such that it can also "drive rows". However I didnt go
     ahead and perfom that rewriting, so I had to stick with the "ergodox-firmware". In retrospect
     I'd wish I had wired the diodes the other way around.
 
-    The first picture doesnt show how the 6 thumb-keys are actually individually connected to the 6
-    main columns.
+    This first picture doesnt show how the 6 thumb-keys are actually individually connected to the 6
+    main columns, but you can see very clearly that the diodes are all wired in the same direction.
 
     [[file:wiring-create-columns-left.jpg]]
 
@@ -239,15 +234,18 @@
     - The LEDs are handy for debugging, definately go ahead and connect those. When the keyboard
       starts successfully two of the LEDs light up shortly.
     - From the Teensy over to the MCP go exactly 4 connections. The blue, the red and the two green
-      ones. This is done using the TTRS jacks and cable (TODO: Add picture here how the jacks are
-      wired)
+      ones. This is done using the TTRS jacks and cable.
     - Yes, the connection from B4 to VCC doesnt seem to make any sense, but the B4 port actually
       gets used directly in the ergodox-firmware, so just connect those connections that make no
       sense on first sight and either dont question it or find out why this is necessary by going
       through the firmware in great detail.
 
+    This is how the trrs jacks are wired:
+
+    [[file:trrs-jack.jpg]]
+
+    After you are done you might have the following result:
+
     [[file:rows-and-columns-connected-to-chips.jpg]]
 
     How the TRRS jacks are wired for both sides:
-
-    [[file:trrs-jacks.jpg]]
