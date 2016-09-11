@@ -63,8 +63,7 @@
   After all the parts have arrived it is safe to move on to the next section.
 
 * Wiring
-  It is assumed that you have printed the casing successfully, I had alot of help for this so I'm
-  not going into advice on 3D printing here.
+  It is assumed that you have printed the casing successfully.
 
   1) Plug the switches into the Casing, no glue is needed, the casing provides the perfect fit.
   2) Put the keycaps on the switches
@@ -77,13 +76,13 @@
   1. The first option is to print flexible PCBs. The advantage is that you save alot of wiring
      business, everything looks rather clean and you dont have to worry about your cables being too
      thick such that the casing doesnt close. However if you don't have the means to print out such
-     PCBs there is the second option, hand-wiring everything by hand.
-     - The guide for this is very rough indeed and it doesnt include the firmware used. Wiring and
-       firmware play extremely close together, wiring before knowing your firmware is like buying a
-       shoe without measuring your feet before. For this option information about the exact
-       firmware is not published, this in addition to the fact that the pictures in this rough
-       guide are incomplete makes this option extremely beginner-unfriendly. Going in blind-sided
-       like this may lead to one of these things:
+     PCBs there is the second option, wiring everything by hand.
+     - The guide for this PCB-option is very rough indeed and it doesnt include the firmware
+       used. Wiring and firmware play extremely close together, wiring before knowing your
+       firmware is like buying a shoe without measuring your feet before. For this option
+       information about the exact firmware is not published, this in addition to the fact that
+       the pictures in this rough guide are incomplete makes this option extremely
+       beginner-unfriendly. Going in blind-sided like this may lead to one of these things:
        1. reprogramming huge parts of the firmware to match your wiring which comes with a ton of
           debugging
        2. rewiring to adapt to what the firmware expects, which may easily double your work here
@@ -190,9 +189,10 @@
     want to wire the diodes in the according way (check whether the tmk_keyboard firmware expects
     a row-driven or a column-driven setup).
 
-    As you can see in these following pictures I went for the "row-driven" setup. This first
-    picture doesnt show how the 6 thumb-keys are actually individually connected to the 6 main
-    columns, but you can see very clearly that the diodes are all wired in the same direction.
+    As you can see in these following pictures I went for the "row-driven" setup (visible by the
+    direction of the diodes, the black line being towards the key-switches). This first picture
+    doesnt show how the 6 thumb-keys are actually individually connected to the 6 main columns,
+    but note the small black line on each diode.
 
     [[file:wiring-create-columns-left.jpg]]
 
@@ -206,7 +206,7 @@
 
     [[file:thumb-key-wiring.jpg]]
 
-*** Put the Teensy and the MCP in place
+*** Step 3: Put the Teensy and the MCP in place
     This next step is to wire the Teensy 2.0 and the MCP 23018 in place.
     Everything necessary for that really is the following circuit diagram
 
