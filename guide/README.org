@@ -178,30 +178,21 @@
 
 *** Step 2: Create the columns
     The next step is to create the columns by soldering the diodes. There are two options for
-    soldering the diodes. The end where that color-mark is denotes the direction of the diode. The
-    way these diodes are directed is crucial for the algorithm that detects the
-    key-press. Detecting the key-press can be done in two ways, row- or column-driven.
-
-    These following sketches are supposed to make the two "driving"-options the ergodox-firmware
-    has more clear.
+    soldering the diodes, all heading towards the switch or all heading away from the
+    switch. These two ways are called "row-driven" or "column-driven" and here again it is
+    cruciual for the firmware and the actual wiring to be on the same page.
 
     [[file:diode-diagram-drive-columns.png]]
 
     [[file:diode-diagram-drive-rows.png]]
 
-    Luckily in our firmware "ergodox-firmware" we have the option that adapts to that. However if
-    you want to try and use the "tmk_keyboard" firmware which seems to be also interesting you
-    want to wire the diodes the other way. This way the "columns are driving". As a side note, if
-    I understand it correctly the tmk_keyboard firmware thinks of rows as columns and the other
-    way around.
+    If you want to try and use the "tmk_keyboard" firmware which seems to be also interesting you
+    want to wire the diodes in the according way (check whether the tmk_keyboard firmware expects
+    a row-driven or a column-driven setup).
 
-    The tmk_keyboard firmware could also be used for this kind of wiring, but it would have to be
-    rewritten, maybe in a beautiful way, such that it can also "drive rows". However I didnt go
-    ahead and perfom that rewriting, so I had to stick with the "ergodox-firmware". In retrospect
-    I'd wish I had wired the diodes the other way around.
-
-    This first picture doesnt show how the 6 thumb-keys are actually individually connected to the 6
-    main columns, but you can see very clearly that the diodes are all wired in the same direction.
+    As you can see in these following pictures I went for the "row-driven" setup. This first
+    picture doesnt show how the 6 thumb-keys are actually individually connected to the 6 main
+    columns, but you can see very clearly that the diodes are all wired in the same direction.
 
     [[file:wiring-create-columns-left.jpg]]
 
@@ -248,4 +239,4 @@
 
     [[file:rows-and-columns-connected-to-chips.jpg]]
 
-    How the TRRS jacks are wired for both sides:
+    Good luck!
