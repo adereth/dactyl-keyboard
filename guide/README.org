@@ -1,5 +1,5 @@
 * Preparation and Cost
-  Get all the parts / raw material
+  Get all the parts / raw material:
   - For the 3D printing there are two options:
     1. Filament, which is the basis for 3D printing. Luckily I could print at my work-place
        which reduced the cost from 210€ to 70€. The kind of filament you need depends on the 3D
@@ -164,9 +164,9 @@
 *** Step 1: Creating the rows
     Using the copper wire you solder each row together, notice how the thumb-part gets its own
     row. If you take a close look you can see how I did do a messy job soldering, I had to redo
-    some of the parts because they weren't soldered properly. Do this for both sides. Which ones of
-    the pins you chose for the row doesnt matter, but for it to look clean you should decide for
-    either one of them
+    some of the parts because they weren't soldered properly. Do this for both sides. Which ones
+    of the two available pins of each switch you chose for the row doesnt matter, but for it to
+    look clean you should decide for either one of them.
 
     [[file:wiring_create_rows.jpg]]
 
@@ -183,19 +183,26 @@
     black part towards the switch, it is important that you follow that pattern for all of the
     switches. The end where that color-mark is denotes the direction of the diode. The way these
     diodes are directed, we have to have a firmware that "drives the rows", which means the
-    electricity can go from the column through the pressed switch through the row, but not the
-    other way around (TODO: insert diagram here to explain this further).
+    electricity can go from the row through the pressed key-switches to the columns, but not the
+    other way around.
+
+    These following sketches are supposed to make the two "driving"-options the ergodox-firmware
+    has more clear.
+
+    [[file:diode-diagram-drive-columns.png]]
+
+    [[file:diode-diagram-drive-rows.png]]
 
     Luckily in our firmware "ergodox-firmware" we have the option that adapts to that. However if
     you want to try and use the "tmk_keyboard" firmware which seems to be also interesting you
     want to wire the diodes the other way. This way the "columns are driving". As a side note, for
-    some reason the tmk_keyboard firmware things of rows as columns and the other way around, so
+    some reason the tmk_keyboard firmware thinks of rows as columns and the other way around, so
     if you look through the source code it will also see "drive rows", even though that means
     "driving columns".
 
     The tmk_keyboard firmware could also be used for this kind of wiring, but it would have to be
     rewritten, maybe in a beautiful way, such that it can also "drive rows". However I didnt go
-    ahead and perfomed that rewriting, so I had to stick with the "ergodox-firmware". In retrospect
+    ahead and perfom that rewriting, so I had to stick with the "ergodox-firmware". In retrospect
     I'd wish I had wired the diodes the other way around.
 
     The first picture doesnt show how the 6 thumb-keys are actually individually connected to the 6
@@ -207,7 +214,11 @@
 
     [[file:wiring-create-columns-right.jpg]]
 
-    TODO: Insert diagram of how the thumb-keys are connected to the main clumns.
+    How Thumb-keys are wired again depends on the firmware, the following picture shows the wiring
+    of the thumb keys more clearly and also the part in the code that reflects this wiring
+    (ergodox-firmware/src/keyboard/dactyl/matrix.h).
+
+    [[file:thumb-key-wiring.jpg]]
 
 *** Put the Teensy and the MCP in place
     This next step is to wire the Teensy 2.0 and the MCP 23018 in place.
@@ -215,14 +226,12 @@
 
     [[file:circuit-diagram.png]]
 
-    [[file:rows-and-columns-connected-to-chips.jpg]]
-
     Things to note here:
     - The columns for the MCP go from 0 to 6, the columns for the Teensy go from 7 to D (counting
       in hexadecimal) which makes great sence, since the MCP is left to the Teensy and we read from
       left to right.
     - When debugging this and using the ergodox-firmware, both sides have to be wired completely
-      and actually connected, dont expect the keyboard to work before that. The reason being is how
+      and actually with the TTRS connected, dont expect the keyboard to work before that. The reason being is how
       the ergodox-firmware stops completely if either the Teensy or the MCP weren't initiated
       properly.
     - In the circuit-diagram the columns on the left side (MCP side) actually go from GPA5 to INTA
@@ -236,3 +245,9 @@
       gets used directly in the ergodox-firmware, so just connect those connections that make no
       sense on first sight and either dont question it or find out why this is necessary by going
       through the firmware in great detail.
+
+    [[file:rows-and-columns-connected-to-chips.jpg]]
+
+    How the TRRS jacks are wired for both sides:
+
+    [[file:trrs-jacks.jpg]]
