@@ -31,7 +31,7 @@ Pregenerated STL files are available in the [things/](things/) directory.
 ### Wiring
 Masks for the flexible PCBs I used are available for the [left](resources/pcb-left.svg) and [right](resources/pcb-right.svg) side.
 
-A [very rough guide for the brave is here](guide/README.md) - It will be improved over time (**TODO**)!
+A [very rough guide for the brave is here](guide/README.org#wiring) - It will be improved over time (**TODO**)!
 
 ## License
 
