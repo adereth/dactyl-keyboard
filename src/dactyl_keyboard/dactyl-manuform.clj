@@ -4,6 +4,11 @@
             [scad-clj.model :refer :all]
             [unicode-math.core :refer :all]))
 
+
+(def nrows 4)
+(def lastrow (dec nrows))
+(def cornerrow (dec lastrow))
+
 ;;;;;;;;;;;;;;;;;
 ;; Switch Hole ;;
 ;;;;;;;;;;;;;;;;;
@@ -87,7 +92,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (def columns (range 0 6))
-(def rows (range 0 4))
+(def rows (range 0 nrows))
 
 (def α (/ π 12))
 (def β (/ π 26))
@@ -139,7 +144,7 @@
          (for [column columns
                row rows
                :when (or (.contains [2 3] column)
-                         (not= row (last rows)))]
+                         (not= row lastrow))]
            (->> single-plate
                 (key-place column row)))))
 
@@ -148,7 +153,7 @@
          (for [column columns
                row rows
                :when (or (.contains [2 3] column)
-                         (not= row (last rows)))]
+                         (not= row lastrow))]
            (->> (sa-cap (if (= column 5) 1 1))
                 (key-place column row)))))
 
@@ -180,7 +185,7 @@
           (for [column (drop-last columns)
                 row rows
                 :when (or (.contains [2] column)
-                          (not= row (last rows)))]
+                          (not= row lastrow))]
             (triangle-hulls
              (key-place (inc column) row web-post-tl)
              (key-place column row web-post-tr)
@@ -294,18 +299,73 @@
 
 (def thumb
   (union
-;    thumb-connectors
    (thumb-1x-layout single-plate)
    (thumb-15x-layout single-plate)
    (thumb-15x-layout larger-plate)
    ))
+
+(def thumb-post-tr (translate [(- (/ mount-width 2) post-adj)  (- (/ mount-height  1.15) post-adj) 0] web-post))
+(def thumb-post-tl (translate [(+ (/ mount-width -2) post-adj) (- (/ mount-height  1.15) post-adj) 0] web-post))
+(def thumb-post-bl (translate [(+ (/ mount-width -2) post-adj) (+ (/ mount-height -1.15) post-adj) 0] web-post))
+(def thumb-post-br (translate [(- (/ mount-width 2) post-adj)  (+ (/ mount-height -1.15) post-adj) 0] web-post))
+
+(def thumb-connectors
+  (union
+      (triangle-hulls    ; top two
+             (thumb-tl-place thumb-post-tr)
+             (thumb-tl-place thumb-post-br)
+             (thumb-tr-place thumb-post-tl)
+             (thumb-tr-place thumb-post-bl))
+      (triangle-hulls    ; bottom two on the right
+             (thumb-br-place web-post-tr)
+             (thumb-br-place web-post-br)
+             (thumb-mr-place web-post-tl)
+             (thumb-mr-place web-post-bl))
+      (triangle-hulls    ; bottom two on the left
+             (thumb-bl-place web-post-tr)
+             (thumb-bl-place web-post-br)
+             (thumb-ml-place web-post-tl)
+             (thumb-ml-place web-post-bl))
+      (triangle-hulls    ; centers of the bottom four
+             (thumb-br-place web-post-tl)
+             (thumb-bl-place web-post-bl)
+             (thumb-br-place web-post-tr)
+             (thumb-bl-place web-post-br)
+             (thumb-mr-place web-post-tl)
+             (thumb-ml-place web-post-bl)
+             (thumb-mr-place web-post-tr)
+             (thumb-ml-place web-post-br))
+      (triangle-hulls    ; top two to the middle two, starting on the left
+             (thumb-tl-place thumb-post-tl)
+             (thumb-ml-place web-post-tr)
+             (thumb-tl-place thumb-post-bl)
+             (thumb-ml-place web-post-br)
+             (thumb-tl-place thumb-post-br)
+             (thumb-mr-place web-post-tr)
+             (thumb-tr-place thumb-post-bl)
+             (thumb-mr-place web-post-br)
+             (thumb-tr-place thumb-post-br)) 
+      (triangle-hulls    ; top two to the main keyboard, starting on the left
+             (thumb-tl-place thumb-post-tl)
+             (key-place 0 cornerrow web-post-bl)
+             (thumb-tl-place thumb-post-tr)
+             (key-place 0 cornerrow web-post-br)
+             (thumb-tr-place thumb-post-tl)
+             (key-place 1 cornerrow web-post-bl)
+             (key-place 1 cornerrow web-post-br)
+             (thumb-tr-place thumb-post-tr)
+             (key-place 2 cornerrow web-post-tl)
+             (key-place 2 cornerrow web-post-bl)
+      )
+  ))
 
 (spit "repl.scad"
       (write-scad (union
                    key-holes
                    connectors
                    thumb
-                   thumbcaps
+                   thumb-connectors
+                  ;  thumbcaps
                    caps
                   ;  front-wall
                   ;  right-wall
