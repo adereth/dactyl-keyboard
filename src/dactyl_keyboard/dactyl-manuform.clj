@@ -214,69 +214,69 @@
 ;;;;;;;;;;;;
 ;; Thumbs ;;
 ;;;;;;;;;;;;
-(def thumborigin [-25 -35 40])
+(def thumborigin [-23 -34 35])
 
 (defn deg2rad [degrees]
   (* (/ degrees 180) pi))
 
-(defn thumb-a1-place [shape]
+(defn thumb-tr-place [shape]
   (->> shape
        (rotate (deg2rad  10) [1 0 0])
        (rotate (deg2rad -23) [0 1 0])
        (rotate (deg2rad  -3) [0 0 1])
        (translate thumborigin)
-       (translate [-16 -23 -3])
+       (translate [-10 -16 0])
        ))
-(defn thumb-a2-place [shape]
+(defn thumb-tl-place [shape]
   (->> shape
-       (rotate (deg2rad  15) [1 0 0])
-       (rotate (deg2rad -35) [0 1 0])
+       (rotate (deg2rad  10) [1 0 0])
+       (rotate (deg2rad -23) [0 1 0])
+       (rotate (deg2rad  -3) [0 0 1])
+       (translate thumborigin)
+       (translate [-30 -15 -2])))
+(defn thumb-mr-place [shape]
+  (->> shape
+       (rotate (deg2rad  -6) [1 0 0])
+       (rotate (deg2rad -34) [0 1 0])
+       (rotate (deg2rad  48) [0 0 1])
+       (translate thumborigin)
+       (translate [-29 -40 -13])
+       ))
+(defn thumb-ml-place [shape]
+  (->> shape
+       (rotate (deg2rad   6) [1 0 0])
+       (rotate (deg2rad -34) [0 1 0])
+       (rotate (deg2rad  40) [0 0 1])
+       (translate thumborigin)
+       (translate [-51 -25 -12])))
+(defn thumb-br-place [shape]
+  (->> shape
+       (rotate (deg2rad -16) [1 0 0])
+       (rotate (deg2rad -33) [0 1 0])
        (rotate (deg2rad  54) [0 0 1])
        (translate thumborigin)
-       (translate [-28 -50 -16])
+       (translate [-37.8 -55.3 -25.3])
        ))
-(defn thumb-a3-place [shape]
+(defn thumb-bl-place [shape]
   (->> shape
-       (rotate (deg2rad   6) [1 0 0])
-       (rotate (deg2rad -34) [0 1 0])
-       (rotate (deg2rad  74) [0 0 1])
-       (translate thumborigin)
-       (translate [-35 -65 -27])))
-(defn thumb-b1-place [shape]
-  (->> shape
-       (rotate (deg2rad  10) [1 0 0])
-       (rotate (deg2rad -23) [0 1 0])
-       (rotate (deg2rad  -3) [0 0 1])
-       (translate thumborigin)
-       (translate [-36 -21 -5])))
-(defn thumb-b2-place [shape]
-  (->> shape
-       (rotate (deg2rad   6) [1 0 0])
-       (rotate (deg2rad -34) [0 1 0])
-       (rotate (deg2rad  70) [0 0 1])
-       (translate thumborigin)
-       (translate [-51 -34 -16])
-       ))
-(defn thumb-b3-place [shape]
-  (->> shape
-       (rotate (deg2rad   3) [1 0 0])
+       (rotate (deg2rad  -4) [1 0 0])
        (rotate (deg2rad -35) [0 1 0])
        (rotate (deg2rad  52) [0 0 1])
        (translate thumborigin)
-       (translate [-55 -52 -28])
+       (translate [-56.3 -43.3 -23.5])
        ))
 
 (defn thumb-1x-layout [shape]
   (union
-   (thumb-a2-place shape)
-   (thumb-a3-place shape)
-   (thumb-b2-place shape)
-   (thumb-b3-place shape)))
+   (thumb-mr-place shape)
+   (thumb-ml-place shape)
+   (thumb-br-place shape)
+   (thumb-bl-place shape)))
 
 (defn thumb-15x-layout [shape]
   (union
-   (thumb-a1-place shape)
-   (thumb-b1-place shape)))
+   (thumb-tr-place shape)
+   (thumb-tl-place shape)))
 
 (def larger-plate
   (let [plate-height (/ (- sa-double-length mount-height) 3)
@@ -291,89 +291,10 @@
    (thumb-1x-layout (sa-cap 1))
    (thumb-15x-layout (rotate (/ π 2) [0 0 1] (sa-cap 1.5)))))
 
-(def thumb-connectors
-  (union
-   (apply union
-          (concat
-           (for [column [2] row [1]]
-             (triangle-hulls (thumb-place column row web-post-br)
-                             (thumb-place column row web-post-tr)
-                             (thumb-place (dec column) row web-post-bl)
-                             (thumb-place (dec column) row web-post-tl)))
-           (for [column [2] row [0 1]]
-             (triangle-hulls
-              (thumb-place column row web-post-bl)
-              (thumb-place column row web-post-br)
-              (thumb-place column (dec row) web-post-tl)
-              (thumb-place column (dec row) web-post-tr)))))
-   (let [plate-height (/ (- sa-double-length mount-height) 2)
-         thumb-tl (->> web-post-tl
-                       (translate [0 plate-height 0]))
-         thumb-bl (->> web-post-bl
-                       (translate [0 (- plate-height) 0]))
-         thumb-tr (->> web-post-tr
-                       (translate [0 plate-height 0]))
-         thumb-br (->> web-post-br
-                       (translate [0 (- plate-height) 0]))]
-     (union
-
-      ;;Connecting the two doubles
-      (triangle-hulls (thumb-place 0 -1/2 thumb-tl)
-                      (thumb-place 0 -1/2 thumb-bl)
-                      (thumb-place 1 -1/2 thumb-tr)
-                      (thumb-place 1 -1/2 thumb-br))
-
-      ;;Connecting the double to the one above it
-      (triangle-hulls (thumb-place 1 -1/2 thumb-tr)
-                      (thumb-place 1 -1/2 thumb-tl)
-                      (thumb-place 1 1 web-post-br)
-                      (thumb-place 1 1 web-post-bl))
-
-      ;;Connecting the 4 with the double in the bottom left
-      (triangle-hulls (thumb-place 1 1 web-post-bl)
-                      (thumb-place 1 -1/2 thumb-tl)
-                      (thumb-place 2 1 web-post-br)
-                      (thumb-place 2 0 web-post-tr))
-
-      ;;Connecting the two singles with the middle double
-      (hull (thumb-place 1 -1/2 thumb-tl)
-            (thumb-place 1 -1/2 thumb-bl)
-            (thumb-place 2 0 web-post-br)
-            (thumb-place 2 -1 web-post-tr))
-      (hull (thumb-place 1 -1/2 thumb-tl)
-            (thumb-place 2 0 web-post-tr)
-            (thumb-place 2 0 web-post-br))
-      (hull (thumb-place 1 -1/2 thumb-bl)
-            (thumb-place 2 -1 web-post-tr)
-            (thumb-place 2 -1 web-post-br))
-
-      ;;Connecting the thumb to everything
-      (triangle-hulls (thumb-place 0 -1/2 thumb-br)
-                      (key-place 1 4 web-post-bl)
-                      (thumb-place 0 -1/2 thumb-tr)
-                      (key-place 1 4 web-post-tl)
-                      (key-place 1 3 web-post-bl)
-                      (thumb-place 0 -1/2 thumb-tr)
-                      (key-place 0 3 web-post-br)
-                      (key-place 0 3 web-post-bl)
-                      (thumb-place 0 -1/2 thumb-tr)
-                      (thumb-place 0 -1/2 thumb-tl)
-                      (key-place 0 3 web-post-bl)
-                      (thumb-place 1 -1/2 thumb-tr)
-                      (thumb-place 1 1 web-post-br)
-                      (key-place 0 3 web-post-bl)
-                      (key-place 0 3 web-post-tl)
-                      (thumb-place 1 1 web-post-br)
-                      (thumb-place 1 1 web-post-tr))      
-      (hull (thumb-place 0 -1/2 web-post-tr)
-            (thumb-place 0 -1/2 thumb-tr)
-            (key-place 1 4 web-post-bl)
-            (key-place 1 4 web-post-tl))))))
 
 (def thumb
   (union
 ;    thumb-connectors
-   thumbcaps
    (thumb-1x-layout single-plate)
    (thumb-15x-layout single-plate)
    (thumb-15x-layout larger-plate)
@@ -383,9 +304,9 @@
       (write-scad (union
                    key-holes
                    connectors
-                   caps
                    thumb
-                  ;  thumbcaps
+                   thumbcaps
+                   caps
                   ;  front-wall
                   ;  right-wall
                   ;  new-case
