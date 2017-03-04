@@ -6,6 +6,7 @@
 
 
 (def nrows 4)
+(def ncols 6)
 (def lastrow (dec nrows))
 (def cornerrow (dec lastrow))
 
@@ -91,7 +92,7 @@
 ;; Placement Functions ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(def columns (range 0 6))
+(def columns (range 0 ncols))
 (def rows (range 0 nrows))
 
 (def α (/ π 12))
@@ -134,6 +135,27 @@
                           (translate [0 0 (- column-radius)])
                           (rotate column-angle [0 1 0])
                           (translate [0 0 column-radius])
+                          (translate column-offset))]
+    (->> placed-shape
+         (rotate (/ π 12) [0 1 0])
+         (translate [0 0 13]))))
+
+(defn bottom-place [column row shape]
+  (let [row-placed-shape (->> shape
+                              (translate [0 0 (- row-radius)])
+                              (rotate (* α (- 2 row)) [1 0 0])
+                              (translate [0 0 row-radius]))
+        column-offset (cond (< column 1.5) [-1 0 0]
+                       :else [0 0 0])
+        column-row-offset (if (not= column 6) [0 -4.35 4.8]
+                        (if (not= row 4) [-7.25 -5.8 2.1]
+                                         [-7.89 -5.8 3.6]))
+        column-angle (* β (- 2 column))
+        placed-shape (->> row-placed-shape
+                          (translate [0 0 (- column-radius)])
+                          (rotate column-angle [0 1 0])
+                          (translate [0 0 column-radius])
+                          (translate column-row-offset)
                           (translate column-offset))]
     (->> placed-shape
          (rotate (/ π 12) [0 1 0])
@@ -182,7 +204,7 @@
   (apply union
          (concat
           ;; Row connections
-          (for [column (drop-last columns)
+          (for [column (range -1 ncols)
                 row rows
                 :when (or (.contains [2] column)
                           (not= row lastrow))]
@@ -194,7 +216,7 @@
 
           ;; Column connections
           (for [column columns
-                row (drop-last rows)
+                row (range -1 lastrow)
             ;     :when (or (.contains [2 3] column)
             ;               (not= row 2))
                           ]
@@ -205,8 +227,8 @@
              (key-place column (inc row) web-post-tr)))
 
           ;; Diagonal connections
-          (for [column (drop-last columns)
-                row (drop-last rows)
+          (for [column (range -1 ncols)
+                row (range -1 lastrow)
             ;     :when (or (.contains [ 1 2 3] column)
             ;               (not= row 2))
                           ]
@@ -359,28 +381,260 @@
       )
   ))
 
-(spit "repl.scad"
-      (write-scad (union
-                   key-holes
-                   connectors
-                   thumb
-                   thumb-connectors
-                  ;  thumbcaps
-                   caps
-                  ;  front-wall
-                  ;  right-wall
-                  ;  new-case
-                   )))
-
 ;;;;;;;;;;
 ;; Case ;;
 ;;;;;;;;;;
 
 ;; In column units
-(def right-wall-column (+ (last columns) 0.55))
+(def right-wall-column (+ (last columns) 0.1))
 (def left-wall-column (- (first columns) 1/2))
-(def thumb-back-y 0.93)
+(def thumb-back-y 0.1)
+(def thumb-case-z 3)
 (def thumb-right-wall (- -1/2 0.05))
 (def thumb-front-row (+ -1 0.07))
 (def thumb-left-wall-column (+ 5/2 0.05))
 (def back-y 0.02)
+
+(defn range-inclusive [start end step]
+  (concat (range start end step) [end]))
+
+(def wall-step 0.2)
+(def wall-sphere-n 20) ;;20 Sphere resolution, lower for faster renders
+
+(defn wall-cube-at [coords]
+  (->> (cube 3 3 3)
+       (translate coords)))
+
+(defn scale-to-range [start end x]
+  (+ start (* (- end start) x)))
+
+(defn wall-cube-bottom [front-to-back-scale]
+  (wall-cube-at [0
+                   (scale-to-range
+                    (+ (/ mount-height -2) -3.5)
+                    (+ (/ mount-height 2) 5.0)
+                    front-to-back-scale)
+                   -6])) ; was -6, then 2
+
+(defn wall-cube-top [front-to-back-scale]
+  (wall-cube-at [0
+                   (scale-to-range
+                    (+ (/ mount-height -2) -3.5)
+                    (+ (/ mount-height 2) 3.5)
+                    front-to-back-scale)
+                   4])) ; case height
+
+(def wall-cube-top-back (wall-cube-top 1))
+(def wall-cube-bottom-back (wall-cube-bottom 1))
+(def wall-cube-bottom-front (wall-cube-bottom 0))
+(def wall-cube-top-front (wall-cube-top 0))
+
+
+(defn bottom [height p]
+  (->> (project p)
+       (extrude-linear {:height height :twist 0 :convexity 0})
+       (translate [0 0 (/ height 2)])))
+
+(defn bottom-hull [& p]
+  (hull p (bottom 10.001 p)))
+
+
+(def bottom-key-guard (->> (cube mount-width mount-height web-thickness)
+                           (translate [0 0 (+ (- (/ web-thickness 2)) -5)])))
+(def bottom-front-key-guard (->> (cube mount-width (/ mount-height 2) web-thickness)
+                                 (translate [0 (/ mount-height 4) (+ (- (/ web-thickness 2)) -5)])))
+
+(defn stand-at [diameter placement]
+  (let [bumper-radius (/ diameter 2)
+       stand-diameter (+ diameter 2)
+       stand-radius (/ stand-diameter 2)]
+    (difference (->> (sphere stand-radius)
+                     (translate [0 0 (+ (/ stand-radius -2) -4.5)])
+                      placement
+                      bottom-hull)
+                (->> (cube stand-diameter stand-diameter stand-radius)
+                     (translate [0 0 (/ stand-radius -2)])
+                      placement)
+                (->> (sphere bumper-radius)
+                     (translate [0 0 (+ (/ stand-radius -2) -4.5)])
+                      placement
+                     (bottom 1.5)))))
+
+(def outer-case
+  (union
+  ;  (let [shift #(translate [0 0 (+ (+ web-thickness) 0)] %)
+   (let [shift #(scale [1 1 1] %)
+         thumb-ridge-height 1
+         thumb-back-offset -1.28
+         thumb-left-offset 1.13
+         thumb-front-offset 0.56
+         front-offset 0.3
+         left-offset 0.2
+         right-offset -0.23
+         back-offset -0.25
+         web-post-tl border-post-tl
+         web-post-tr border-post-tr
+         web-post-br border-post-br
+         web-post-bl border-post-bl
+         half-shift-correction #(translate [0 (/ mount-height 2) 0] %)
+         half-post-br (half-shift-correction web-post-br)
+         half-post-bl (half-shift-correction web-post-bl)
+         row-connections (concat
+                          (for [column (drop-last columns)
+                                row (drop-last rows)
+                                :when (or (not= column 0)
+                                          (not= row 4))]
+                            (triangle-hulls
+                             (key-place (inc column) row web-post-tl)
+                             (key-place column row web-post-tr)
+                             (key-place (inc column) row web-post-bl)
+                             (key-place column row web-post-br)))
+                          (for [column (drop-last columns)
+                                row [(last rows)]
+                                :when (or (not= column 0)
+                                          (not= row 4))]
+                            (triangle-hulls
+                             (key-place (inc column) row web-post-tl)
+                             (key-place column row web-post-tr)
+                             (key-place (inc column) row half-post-bl)
+                             (key-place column row half-post-br))))
+         column-connections (for [column columns
+                                  row (drop-last rows)
+                                  :when (or (not= column 0)
+                                            (not= row 3))]
+                              (triangle-hulls
+                               (key-place column row web-post-bl)
+                               (key-place column row web-post-br)
+                               (key-place column (inc row) web-post-tl)
+                               (key-place column (inc row) web-post-tr)))
+         diagonal-connections (for [column (drop-last columns)
+                                    row (drop-last rows)
+                                    :when (or (not= column 0)
+                                              (not= row 3))]
+                                (triangle-hulls
+                                 (key-place column row web-post-br)
+                                 (key-place column (inc row) web-post-tr)
+                                 (key-place (inc column) row web-post-bl)
+                                 (key-place (inc column) (inc row) web-post-tl)))
+         main-keys-bottom (concat row-connections
+                                  column-connections
+                                  diagonal-connections)
+         front-wall (concat
+                     (for [x (range 4 6)]
+                      (union
+                       (bottom-hull
+                             (key-place (+ x 1) 2.2 web-post-bl)
+                             (key-place x 2.2 web-post-br))
+                       (bottom-hull
+                             (key-place x 2.2 web-post-bl)
+                             (key-place x 2.2 web-post-br)
+                        ))))
+         right-wall (concat
+                     (for [x (range 1 3)]
+                      (union
+                       (bottom-hull
+                             (key-place 5.2 x web-post-br)
+                             (key-place 5.2 x web-post-tr))
+                       (bottom-hull
+                             (key-place 5.2 x web-post-br)
+                             (key-place 5.2 (dec x) web-post-tr))
+                     )))
+         back-wall (concat
+                    (for [x (range  6)]
+                      (union
+                       (hull
+                             (key-place x -0.2 web-post-tl)
+                             (key-place x -0.2 web-post-tr))
+                       (hull
+                             (key-place x -0.2 web-post-tl)
+                             (key-place (- x 1) -0.2 web-post-tr))
+                      ))
+                    )
+         left-wall (concat
+                     (for [x (range 1 3)]
+                      (union
+                       (bottom-hull
+                             (key-place -1.0 x web-post-br)
+                             (key-place -1.0 x web-post-tr))
+                       (bottom-hull
+                             (key-place -1.0 x web-post-br)
+                             (key-place -1.0 (dec x) web-post-tr))
+                     )))
+         ]
+     (apply union
+            (concat
+             ;main-keys-bottom
+             front-wall
+             right-wall
+             back-wall
+             left-wall
+             ;thumbs
+            ;  thumb-back-wall
+            ;  thumb-left-wall
+            ;  thumb-front-wall
+            ;  thumb-inside
+             ;stands)))))
+             )))))
+
+(def border-web-post (cube post-size post-size web-thickness))
+(def border-post-adj (/ border-post-size 2))
+(def border-post-tr (translate [(- (/ mount-width 2) border-post-adj) (- (/ mount-height 2) border-post-adj) 0] border-web-post))
+(def border-post-tl (translate [(+ (/ mount-width -2) border-post-adj) (- (/ mount-height 2) border-post-adj) 0] border-web-post))
+(def border-post-bl (translate [(+ (/ mount-width -2) border-post-adj) (+ (/ mount-height -2) border-post-adj) 0] border-web-post))
+(def border-post-br (translate [(- (/ mount-width 2) border-post-adj) (+ (/ mount-height -2) border-post-adj) 0] border-web-post))
+
+(def upper-brace-multiplier -4)
+(defn wall-brace [x1 y1 dx1 dy1 post1 x2 y2 dx2 dy2 post2]
+  (union
+    (hull
+      (key-place x1 y1 post1)
+      (key-place x1 y1 (scale [1 1 -3] post1))
+      (key-place x1 y1 (translate [(* dx1 5) (* dy1 5) 0] (scale [1 1 -3] post1)))
+      (key-place x2 y2 post2)
+      (key-place x2 y2 (scale [1 1 -3] post2))
+      (key-place x2 y2 (translate [(* dx2 5) (* dy2 5) 0] (scale [1 1 -3] post2)))
+      )
+    (bottom-hull
+      (key-place x1 y1 (translate [(* dx1 5) (* dy1 5) -15] post1))
+      (key-place x1 y1 (translate [0         0         -15] post1))
+      (key-place x1 y1 (translate [(* dx1 5) (* dy1 5) -15] post1))
+      (key-place x2 y2 (translate [0         0         -15] post2))
+      (key-place x2 y2 (translate [(* dx2 5) (* dy2 5) -15] post2))
+      )
+    ; (hull
+    ;   (translate [0 0 -199] (key-place x1 y1 (translate [0         0         -15] post1)))
+    ;   (translate [0 0 -199] (key-place x2 y2 (translate [0         0         -15] post2)))
+    ;   (key-place x1 y1 (translate [(* dx1 5) (* dy1 5) -15] post1))
+    ;   (key-place x1 y1 (translate [0         0         -15] post1))
+    ;   (key-place x1 y1 (translate [(* dx1 5) (* dy1 5) -15] post1))
+    ;   (key-place x2 y2 (translate [0         0         -15] post2))
+    ;   (key-place x2 y2 (translate [(* dx1 5) (* dy1 5) -15] post2))
+    ;   )
+    ))
+
+(def case-walls
+  (union
+   ; back wall
+   (for [x (range 0 6)] (wall-brace x 0 0 1 web-post-tl x       0 0 1 web-post-tr))
+   (for [x (range 1 6)] (wall-brace x 0 0 1 web-post-tl (dec x) 0 0 1 web-post-tr))
+   ; right wall
+   (for [y (range 0 3)] (wall-brace 5 y 1 0 web-post-tr 5 y       1 0 web-post-br))
+   (for [y (range 1 3)] (wall-brace 5 (dec y) 1 0 web-post-br 5 y 1 0 web-post-tr))
+   ; left wall
+   (for [y (range 0 3)] (wall-brace 0 y -1 0 web-post-tl 0 y       -1 0 web-post-bl))
+   (for [y (range 1 3)] (wall-brace 0 (dec y) -1 0 web-post-bl 0 y -1 0 web-post-tl))
+  ))
+
+(spit "repl.scad"
+      (write-scad (difference (union
+                   key-holes
+                  ;  connectors
+                   thumb
+                   thumb-connectors
+                  ;  thumbcaps
+                  ;  caps
+                  ;  front-wall
+                  ;  right-wall
+                   case-walls
+                   )
+                   (translate [0 0 -599] (cube 999 999 999)))))
