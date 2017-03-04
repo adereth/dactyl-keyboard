@@ -122,7 +122,7 @@
                           (translate column-offset))]
     (->> placed-shape
          (rotate (/ π 12) [0 1 0])
-         (translate [0 0 13]))))
+         (translate [0 0 23]))))
 
 (def key-holes
   (apply union
@@ -196,7 +196,7 @@
 ;;;;;;;;;;;;
 ;; Thumbs ;;
 ;;;;;;;;;;;;
-(def thumborigin [-23 -34 35])
+(def thumborigin [-23 -34 45])
 
 (defn deg2rad [degrees]
   (* (/ degrees 180) pi))
