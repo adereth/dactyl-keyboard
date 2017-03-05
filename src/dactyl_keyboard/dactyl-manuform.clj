@@ -9,6 +9,8 @@
 (def ncols 6)
 (def lastrow (dec nrows))
 (def cornerrow (dec lastrow))
+(def α (/ π 12))                        ; curvature of the columns
+(def β (/ π (if (= nrows 4) 26 36)))    ; curvature of the rows
 
 ;;;;;;;;;;;;;;;;;
 ;; Switch Hole ;;
@@ -95,8 +97,6 @@
 (def columns (range 0 ncols))
 (def rows (range 0 nrows))
 
-(def α (/ π 12))
-(def β (/ π 26))
 (def cap-top-height (+ plate-thickness sa-profile-key-height))
 (def row-radius (+ (/ (/ (+ mount-height 1/2) 2)
                       (Math/sin (/ α 2)))
@@ -108,13 +108,15 @@
 (defn key-place [column row shape]
   (let [row-placed-shape (->> shape
                               (translate [0 0 (- row-radius)])
-                              (rotate (* α (- 1 row)) [1 0 0])      ; controls front-back tilt
+                              (rotate (* α 
+                                        (- cornerrow row 1) ; controls front-back tilt
+                                      ) [1 0 0])      
                               (translate [0 0 row-radius]))
         column-offset (cond
                         (= column 2) [0 2.82 -4.5]
                         (>= column 4) [0 -5.8 5.64]
                         :else [0 0 0])
-        column-angle (* β (- 3 column))     ; controls left-right tilt / tenting
+        column-angle (* β (- 3 column))                      ; controls left-right tilt / tenting
         placed-shape (->> row-placed-shape
                           (translate [0 0 (- column-radius)])
                           (rotate column-angle [0 1 0])
@@ -401,18 +403,18 @@
    (key-wall-brace 0 0 0 1 web-post-tl 0 0 -1 0 web-post-tl)
    (key-wall-brace 5 0 0 1 web-post-tr 5 0 1 0 web-post-tr)
    ; right wall
-   (for [y (range 0 3)] (key-wall-brace 5 y 1 0 web-post-tr 5 y       1 0 web-post-br))
-   (for [y (range 1 3)] (key-wall-brace 5 (dec y) 1 0 web-post-br 5 y 1 0 web-post-tr))
-   (key-wall-brace 5 2 0 -1 web-post-br 5 2 1 0 web-post-br)
+   (for [y (range 0 lastrow)] (key-wall-brace 5 y 1 0 web-post-tr 5 y       1 0 web-post-br))
+   (for [y (range 1 lastrow)] (key-wall-brace 5 (dec y) 1 0 web-post-br 5 y 1 0 web-post-tr))
+   (key-wall-brace 5 cornerrow 0 -1 web-post-br 5 cornerrow 1 0 web-post-br)
    ; left wall
-   (for [y (range 0 3)] (key-wall-brace 0 y -1 0 web-post-tl 0 y       -1 0 web-post-bl))
-   (for [y (range 1 3)] (key-wall-brace 0 (dec y) -1 0 web-post-bl 0 y -1 0 web-post-tl))
+   (for [y (range 0 lastrow)] (key-wall-brace 0 y -1 0 web-post-tl 0 y       -1 0 web-post-bl))
+   (for [y (range 1 lastrow)] (key-wall-brace 0 (dec y) -1 0 web-post-bl 0 y -1 0 web-post-tl))
    ; front wall
-   (key-wall-brace 3 3 0 -1 web-post-bl 3 3 0.5 -1 web-post-br)
-   (key-wall-brace 4 2 0 -1 web-post-bl 4 2 0 -1 web-post-br)
-   (key-wall-brace 5 2 0 -1 web-post-bl 5 2 0 -1 web-post-br)
-   (key-wall-brace 3 3 0.5 -1 web-post-br 4 2 1 -1 web-post-bl)
-   (key-wall-brace 4 2 0 -1 web-post-br 5 2 0 -1 web-post-bl)
+   (key-wall-brace 3 lastrow   0 -1 web-post-bl 3 lastrow 0.5 -1 web-post-br)
+   (key-wall-brace 4 cornerrow 0 -1 web-post-bl 4 cornerrow 0 -1 web-post-br)
+   (key-wall-brace 5 cornerrow 0 -1 web-post-bl 5 cornerrow 0 -1 web-post-br)
+   (key-wall-brace 3 lastrow 0.5 -1 web-post-br 4 cornerrow 1 -1 web-post-bl)
+   (key-wall-brace 4 cornerrow 0 -1 web-post-br 5 cornerrow 0 -1 web-post-bl)
    ; thumb walls
    (wall-brace thumb-mr-place  0 -1 web-post-br thumb-tr-place  0 -1 thumb-post-br)
    (wall-brace thumb-mr-place  0 -1 web-post-br thumb-mr-place  0 -1 web-post-bl)
@@ -429,10 +431,30 @@
    (wall-brace thumb-ml-place  0  1 web-post-tl thumb-bl-place  0  1 web-post-tr)
    (wall-brace thumb-bl-place -1  0 web-post-bl thumb-br-place -1  0 web-post-tl)
    (wall-brace thumb-ml-place  0  1 web-post-tr thumb-tl-place -2.5  0 thumb-post-tl)
-   (wall-brace thumb-tl-place -1  0 thumb-post-tl (partial key-place 0 2) -1  0 web-post-bl)
-   
-   (wall-brace thumb-tr-place  0 -1 thumb-post-br (partial key-place 3 3)  0 -1 web-post-bl)
+   (wall-brace thumb-tl-place -1  0 thumb-post-tl (partial key-place 0 cornerrow) -1  0 web-post-bl)
+   (wall-brace thumb-tr-place  0 -1 thumb-post-br (partial key-place 3 lastrow)  0 -1 web-post-bl)
   ))
+
+(def teensy-width 20)
+(def teensy-height 12)
+(def teensy-length 33)
+
+(def usb-cutout
+  (let [hole-height 6.2
+        side-radius (/ hole-height 2)
+        hole-width 10.75        
+        side-cylinder (->> (cylinder side-radius teensy-length)
+                           (with-fn 20)
+                           (translate [(/ (- hole-width hole-height) 2) 0 0]))]
+    (->> (color [20/255 163/255 163/255 1])
+         (hull side-cylinder
+               (mirror [-1 0 0] side-cylinder))
+         (rotate (/ π 2) [1 0 0])
+         (translate [0 (/ teensy-length 2) (- side-radius)])
+         (translate [0 0 (- 1)])
+         (translate [0 0 (- teensy-offset-height)])
+         (key-place 0 1))))
+
 
 (spit "repl.scad"
       (write-scad (union
@@ -440,8 +462,9 @@
                    connectors
                    thumb
                    thumb-connectors
+                   case-walls
+                   usb-cutout
                   ;  thumbcaps
                   ;  caps
-                   case-walls
                    )))
                    
