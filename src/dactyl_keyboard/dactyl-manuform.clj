@@ -122,7 +122,7 @@
                           (translate column-offset))]
     (->> placed-shape
          (rotate (/ π 12) [0 1 0])
-         (translate [0 0 23]))))
+         (translate [0 0 25]))))
 
 (def key-holes
   (apply union
@@ -196,7 +196,7 @@
 ;;;;;;;;;;;;
 ;; Thumbs ;;
 ;;;;;;;;;;;;
-(def thumborigin [-23 -34 45])
+(def thumborigin [-23 -34 48])
 
 (defn deg2rad [degrees]
   (* (/ degrees 180) pi))
@@ -392,13 +392,13 @@
       (place2 (translate [(* dx2 5) (* dy2 5) -15] post2))
       )
     ;  (hull
-    ;   (translate [0 0 -19] (key-place x1 y1 (translate [0         0         -15] post1)))
-    ;   (translate [0 0 -19] (key-place x2 y2 (translate [0         0         -15] post2)))
-    ;   (key-place x1 y1 (translate [(* dx1 5) (* dy1 5) -15] post1))
-    ;   (key-place x1 y1 (translate [0         0         -15] post1))
-    ;   (key-place x1 y1 (translate [(* dx1 5) (* dy1 5) -15] post1))
-    ;   (key-place x2 y2 (translate [0         0         -15] post2))
-    ;   (key-place x2 y2 (translate [(* dx1 5) (* dy1 5) -15] post2))
+    ;   (translate [0 0 -19] (place1 (translate [0         0         -15] post1)))
+    ;   (translate [0 0 -19] (place2 (translate [0         0         -15] post2)))
+    ;   (place1 (translate [(* dx1 5) (* dy1 5) -15] post1))
+    ;   (place1 (translate [0         0         -15] post1))
+    ;   (place1 (translate [(* dx1 5) (* dy1 5) -15] post1))
+    ;   (place2 (translate [0         0         -15] post2))
+    ;   (place2 (translate [(* dx1 5) (* dy1 5) -15] post2))
     ))
 
 (defn key-wall-brace [x1 y1 dx1 dy1 post1 x2 y2 dx2 dy2 post2] (wall-brace (partial key-place x1 y1) dx1 dy1 post1 (partial key-place x2 y2) dx2 dy2 post2))
@@ -419,11 +419,11 @@
    (for [y (range 1 3)] (key-wall-brace 0 (dec y) -1 0 web-post-bl 0 y -1 0 web-post-tl))
    ; front wall
   ;  (key-wall-brace 2 3 0 -1 web-post-bl 2 3 0 -1 web-post-br)
-   (key-wall-brace 3 3 0 -1 web-post-bl 3 3 0 -1 web-post-br)
+   (key-wall-brace 3 3 0 -1 web-post-bl 3 3 0.5 -1 web-post-br)
    (key-wall-brace 4 2 0 -1 web-post-bl 4 2 0 -1 web-post-br)
    (key-wall-brace 5 2 0 -1 web-post-bl 5 2 0 -1 web-post-br)
   ;  (key-wall-brace 2 3 0 -1 web-post-br 3 3 0 -1 web-post-bl)
-   (key-wall-brace 3 3 0 -1 web-post-br 4 2 0 -1 web-post-bl)
+   (key-wall-brace 3 3 0.5 -1 web-post-br 4 2 1 -1 web-post-bl)
    (key-wall-brace 4 2 0 -1 web-post-br 5 2 0 -1 web-post-bl)
    ; thumb walls
    (wall-brace thumb-mr-place  0 -1 web-post-br thumb-tr-place  0 -1 thumb-post-br)
