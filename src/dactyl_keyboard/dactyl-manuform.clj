@@ -371,37 +371,27 @@
 (defn bottom-hull [& p]
   (hull p (bottom 10.001 p)))
 
-
-(def upper-brace-multiplier -4)
-
 (defn wall-brace [place1 dx1 dy1 post1 place2 dx2 dy2 post2]
   (union
     (hull
       (place1 post1)
-      (place1 (scale [1 1 -3] post1))
-      (place1 (translate [(* dx1 5) (* dy1 5) 0] (scale [1 1 -3] post1)))
+      (place1 (translate [0 0 -15] post1))
+      (place1 (translate [(* dx1 5) (* dy1 5) -4] post1))
+      (place1 (translate [(* dx1 5) (* dy1 5) -15] post1))
       (place2 post2)
-      (place2 (scale [1 1 -3] post2))
-      (place2 (translate [(* dx2 5) (* dy2 5) 0] (scale [1 1 -3] post2)))
-      )
+      (place2 (translate [0 0 -15] post2))
+      (place2 (translate [(* dx2 5) (* dy2 5) -4] post2))
+      (place2 (translate [(* dx2 5) (* dy2 5) -15] post2)))
     (bottom-hull
       (place1 (translate [(* dx1 5) (* dy1 5) -15] post1))
       (place1 (translate [0         0         -15] post1))
       (place1 (translate [(* dx1 5) (* dy1 5) -15] post1))
       (place2 (translate [0         0         -15] post2))
-      (place2 (translate [(* dx2 5) (* dy2 5) -15] post2))
-      )
-    ;  (hull
-    ;   (translate [0 0 -19] (place1 (translate [0         0         -15] post1)))
-    ;   (translate [0 0 -19] (place2 (translate [0         0         -15] post2)))
-    ;   (place1 (translate [(* dx1 5) (* dy1 5) -15] post1))
-    ;   (place1 (translate [0         0         -15] post1))
-    ;   (place1 (translate [(* dx1 5) (* dy1 5) -15] post1))
-    ;   (place2 (translate [0         0         -15] post2))
-    ;   (place2 (translate [(* dx1 5) (* dy1 5) -15] post2))
-    ))
+      (place2 (translate [(* dx2 5) (* dy2 5) -15] post2)))))
 
-(defn key-wall-brace [x1 y1 dx1 dy1 post1 x2 y2 dx2 dy2 post2] (wall-brace (partial key-place x1 y1) dx1 dy1 post1 (partial key-place x2 y2) dx2 dy2 post2))
+(defn key-wall-brace [x1 y1 dx1 dy1 post1 x2 y2 dx2 dy2 post2] 
+  (wall-brace (partial key-place x1 y1) dx1 dy1 post1 
+              (partial key-place x2 y2) dx2 dy2 post2))
 
 (def case-walls
   (union
