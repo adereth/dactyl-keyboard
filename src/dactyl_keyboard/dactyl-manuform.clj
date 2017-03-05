@@ -122,7 +122,7 @@
                           (translate column-offset))]
     (->> placed-shape
          (rotate (/ π 12) [0 1 0])
-         (translate [0 0 25]))))
+         (translate [0 0 23]))))
 
 (def key-holes
   (apply union
@@ -196,7 +196,7 @@
 ;;;;;;;;;;;;
 ;; Thumbs ;;
 ;;;;;;;;;;;;
-(def thumborigin [-23 -34 48])
+(def thumborigin [-23 -34 46])
 
 (defn deg2rad [degrees]
   (* (/ degrees 180) pi))
@@ -408,11 +408,9 @@
    (for [y (range 0 3)] (key-wall-brace 0 y -1 0 web-post-tl 0 y       -1 0 web-post-bl))
    (for [y (range 1 3)] (key-wall-brace 0 (dec y) -1 0 web-post-bl 0 y -1 0 web-post-tl))
    ; front wall
-  ;  (key-wall-brace 2 3 0 -1 web-post-bl 2 3 0 -1 web-post-br)
    (key-wall-brace 3 3 0 -1 web-post-bl 3 3 0.5 -1 web-post-br)
    (key-wall-brace 4 2 0 -1 web-post-bl 4 2 0 -1 web-post-br)
    (key-wall-brace 5 2 0 -1 web-post-bl 5 2 0 -1 web-post-br)
-  ;  (key-wall-brace 2 3 0 -1 web-post-br 3 3 0 -1 web-post-bl)
    (key-wall-brace 3 3 0.5 -1 web-post-br 4 2 1 -1 web-post-bl)
    (key-wall-brace 4 2 0 -1 web-post-br 5 2 0 -1 web-post-bl)
    ; thumb walls
@@ -430,14 +428,8 @@
    (wall-brace thumb-mr-place  0 -1 web-post-bl thumb-br-place  0 -1 web-post-br)
    (wall-brace thumb-ml-place  0  1 web-post-tl thumb-bl-place  0  1 web-post-tr)
    (wall-brace thumb-bl-place -1  0 web-post-bl thumb-br-place -1  0 web-post-tl)
-
    (wall-brace thumb-ml-place  0  1 web-post-tr thumb-tl-place -2.5  0 thumb-post-tl)
    (wall-brace thumb-tl-place -1  0 thumb-post-tl (partial key-place 0 2) -1  0 web-post-bl)
-  ;  (wall-brace thumb-ml-place  0  1 web-post-tr thumb-tl-place  0  1 web-post-tl)
-  ;  (wall-brace thumb-tl-place  0  1 thumb-post-tl (partial key-place 0 2)  0  1 web-post-bl)
-  ;  (wall-brace thumb-tl-place  0  1 web-post-tl thumb-tl-place  0  1 thumb-post-tl)
-  ;  (wall-brace thumb-tl-place  0  1 thumb-post-tl (partial key-place 0 2)  0  1 web-post-bl)
-  ;  (wall-brace thumb-tl-place  0  1 web-post-tl thumb-tl-place  0  1 thumb-post-tl)
    
    (wall-brace thumb-tr-place  0 -1 thumb-post-br (partial key-place 3 3)  0 -1 web-post-bl)
   ))
