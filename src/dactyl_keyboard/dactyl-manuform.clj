@@ -444,30 +444,33 @@
          (translate [0 (/ mount-height 2) -15])
                         ; (Math/sin (/ α 2)))
          )))
-; (def test-shape (on-wall-place 1 20 (translate [2.5 15 5] (cube 5 30 10))))
 (def test-shape (on-wall-place 1 20 (cube 5 30 10)))
 
+(def rj9-holder1 
+  (on-wall-place 1 20 
+    (difference (cube 14.78 13 22.38)
+                (translate [0 0 -5] (cube 10.78 13  5)))))
+
+
+(def rj9-cube   (cube 14.78 13 22.38))
+(def rj9-space  (on-wall-place 1 20 rj9-cube))
+(def rj9-holder (on-wall-place 1 20 
+                  (difference rj9-cube
+                              (union (translate [0 2 0] (cube 10.78  9 18.38))
+                                     (translate [0 0 5] (cube 10.78 13  5))))))
+
+(def rj9-holder (on-wall-place 1 20 
+                  (difference rj9-cube
+                              (union (translate [0 2 0] (cube 10.78  9 18.38))
+                                     (translate [0 0 5] (cube 10.78 13  5))))))
 (def teensy-width 20)
 (def teensy-height 12)
 (def teensy-length 33)
+(def teensy2-length 53)
 (def teensy-pcb-thickness 1.6)
 (def teensy-offset-height 5)
 
-(def usb-cutout
-  (let [hole-height 6.2
-        side-radius (/ hole-height 2)
-        hole-width 10.75        
-        side-cylinder (->> (cylinder side-radius teensy-length)
-                           (with-fn 20)
-                           (translate [(/ (- hole-width hole-height) 2) 0 0]))]
-    (->> (color [20/255 163/255 163/255 1])
-         (hull side-cylinder
-               (mirror [-1 0 0] side-cylinder))
-         (translate [0 (/ teensy-length 2) (- side-radius)])
-         (translate [0 0 (- 1)])
-         (translate [0 0 (- teensy-offset-height)])
-         (on-wall-place 1 20))))
-
+(def teensy2 (on-wall-place 0 20 (cube teensy-height teensy2-length teensy-width)))
 
 
 (spit "repl.scad"
@@ -476,9 +479,9 @@
                    connectors
                    thumb
                    thumb-connectors
-                   case-walls
-                   test-shape
-                  ;  usb-cutout
+                   (difference case-walls rj9-space)
+                   rj9-holder
+                   teensy2
                   ;  thumbcaps
                   ;  caps
                    )))
