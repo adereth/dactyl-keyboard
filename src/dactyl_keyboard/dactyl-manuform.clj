@@ -439,11 +439,12 @@
 (defn on-wall-place [column depth shape]
   (key-place column 0
     (->> shape
-         (rotate (* α centerrow) [-1 0 0])      
          (rotate (+ (* β (- centercol column)) (/ π 12)) [0 -1 0])      
+         (rotate (* α centerrow) [-1 0 0])      
          (translate [0 (/ mount-height 2) -15])
                         ; (Math/sin (/ α 2)))
          )))
+; (def test-shape (on-wall-place 1 20 (translate [2.5 15 5] (cube 5 30 10))))
 (def test-shape (on-wall-place 1 20 (cube 5 30 10)))
 
 (def teensy-width 20)
