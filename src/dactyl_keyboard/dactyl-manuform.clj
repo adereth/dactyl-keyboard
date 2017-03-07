@@ -124,7 +124,7 @@
                           (translate column-offset))]
     (->> placed-shape
          (rotate (/ π 12) [0 1 0])
-         (translate [0 0 23]))))
+         (translate [0 0 24]))))
 
 (def key-holes
   (apply union
@@ -198,7 +198,7 @@
 ;;;;;;;;;;;;
 ;; Thumbs ;;
 ;;;;;;;;;;;;
-(def thumborigin [-23 -34 46])
+(def thumborigin [-23 -34 47])
 
 (defn deg2rad [degrees]
   (* (/ degrees 180) pi))
@@ -463,7 +463,7 @@
                    thumb
                    thumb-connectors
                    case-walls
-                   usb-cutout
+                  ;  usb-cutout
                   ;  thumbcaps
                   ;  caps
                    )))
