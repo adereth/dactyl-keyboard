@@ -11,6 +11,9 @@
 (def cornerrow (dec lastrow))
 (def α (/ π 12))                        ; curvature of the columns
 (def β (/ π (if (= nrows 4) 26 36)))    ; curvature of the rows
+(def centerrow (- cornerrow 1))         ; controls front-back tilt
+(def centercol 3)                       ; controls left-right tilt / tenting
+
 
 ;;;;;;;;;;;;;;;;;
 ;; Switch Hole ;;
@@ -108,15 +111,13 @@
 (defn key-place [column row shape]
   (let [row-placed-shape (->> shape
                               (translate [0 0 (- row-radius)])
-                              (rotate (* α 
-                                        (- cornerrow row 1) ; controls front-back tilt
-                                      ) [1 0 0])      
+                              (rotate (* α (- centerrow row)) [1 0 0])      
                               (translate [0 0 row-radius]))
         column-offset (cond
                         (= column 2) [0 2.82 -4.5]
                         (>= column 4) [0 -5.8 5.64]
                         :else [0 0 0])
-        column-angle (* β (- 3 column))                      ; controls left-right tilt / tenting
+        column-angle (* β (- centercol column))   
         placed-shape (->> row-placed-shape
                           (translate [0 0 (- column-radius)])
                           (rotate column-angle [0 1 0])
@@ -435,9 +436,21 @@
    (wall-brace thumb-tr-place  0 -1 thumb-post-br (partial key-place 3 lastrow)  0 -1 web-post-bl)
   ))
 
+(defn on-wall-place [column depth shape]
+  (key-place column 0
+    (->> shape
+         (rotate (* α centerrow) [-1 0 0])      
+         (rotate (+ (* β (- centercol column)) (/ π 12)) [0 -1 0])      
+         (translate [0 (/ mount-height 2) -15])
+                        ; (Math/sin (/ α 2)))
+         )))
+(def test-shape (on-wall-place 1 20 (cube 5 30 10)))
+
 (def teensy-width 20)
 (def teensy-height 12)
 (def teensy-length 33)
+(def teensy-pcb-thickness 1.6)
+(def teensy-offset-height 5)
 
 (def usb-cutout
   (let [hole-height 6.2
@@ -449,11 +462,11 @@
     (->> (color [20/255 163/255 163/255 1])
          (hull side-cylinder
                (mirror [-1 0 0] side-cylinder))
-         (rotate (/ π 2) [1 0 0])
          (translate [0 (/ teensy-length 2) (- side-radius)])
          (translate [0 0 (- 1)])
          (translate [0 0 (- teensy-offset-height)])
-         (key-place 0 1))))
+         (on-wall-place 1 20))))
+
 
 
 (spit "repl.scad"
@@ -463,6 +476,7 @@
                    thumb
                    thumb-connectors
                    case-walls
+                   test-shape
                   ;  usb-cutout
                   ;  thumbcaps
                   ;  caps
