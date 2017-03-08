@@ -431,26 +431,25 @@
    (wall-brace thumb-mr-place  0 -1 web-post-bl thumb-br-place  0 -1 web-post-br)
    (wall-brace thumb-ml-place  0  1 web-post-tl thumb-bl-place  0  1 web-post-tr)
    (wall-brace thumb-bl-place -1  0 web-post-bl thumb-br-place -1  0 web-post-tl)
+   (wall-brace thumb-tr-place  0 -1 thumb-post-br (partial key-place 3 lastrow)  0 -1 web-post-bl)
+   ; clunky bit on the top left thumb connection
    (wall-brace thumb-ml-place  0  1 web-post-tr thumb-tl-place -2.5  0 thumb-post-tl)
    (wall-brace thumb-tl-place -1  0 thumb-post-tl (partial key-place 0 cornerrow) -1  0 web-post-bl)
-   (wall-brace thumb-tr-place  0 -1 thumb-post-br (partial key-place 3 lastrow)  0 -1 web-post-bl)
+   ;; another incomplete try to fix this
+   ;  (bottom-hull (thumb-tl-place thumb-post-tl)
+   ;               (thumb-tl-place (translate [-7 0 0] thumb-post-tl))
+   ;               (thumb-ml-place web-post-tr)
+   ;               (thumb-ml-place (translate [0 5 -4] web-post-tr)))
   ))
 
 (defn on-wall-place [column depth shape]
-  (key-place column 0
-    (->> shape
-         (rotate (+ (* β (- centercol column)) (/ π 12)) [0 -1 0])      
-         (rotate (* α centerrow) [-1 0 0])      
-         (translate [0 (/ mount-height 2) -15])
-                        ; (Math/sin (/ α 2)))
-         )))
-(def test-shape (on-wall-place 1 20 (cube 5 30 10)))
-
-(def rj9-holder1 
-  (on-wall-place 1 20 
-    (difference (cube 14.78 13 22.38)
-                (translate [0 0 -5] (cube 10.78 13  5)))))
-
+  (translate [0 0 (- depth)]
+    (key-place column 0
+      (->> shape
+           (rotate (+ (* β (- centercol column)) (/ π 12)) [0 -1 0])      
+           (rotate (* α centerrow) [-1 0 0])      
+           (translate [0 (/ mount-height 2) -15])
+           ))))
 
 (def rj9-cube   (cube 14.78 13 22.38))
 (def rj9-space  (on-wall-place 1 20 rj9-cube))
@@ -459,19 +458,44 @@
                               (union (translate [0 2 0] (cube 10.78  9 18.38))
                                      (translate [0 0 5] (cube 10.78 13  5))))))
 
-(def rj9-holder (on-wall-place 1 20 
-                  (difference rj9-cube
-                              (union (translate [0 2 0] (cube 10.78  9 18.38))
-                                     (translate [0 0 5] (cube 10.78 13  5))))))
-(def teensy-width 20)
+(def teensy-width 20)  ; was 20
 (def teensy-height 12)
 (def teensy-length 33)
 (def teensy2-length 53)
-(def teensy-pcb-thickness 1.6)
+(def teensy-pcb-thickness 1.6) 
 (def teensy-offset-height 5)
 
-(def teensy2 (on-wall-place 0 20 (cube teensy-height teensy2-length teensy-width)))
+; (def teensy-holder 
+;   (on-wall-place 0 20 
+;     (union 
+;       (->> (cube 5 (* 1.2 teensy2-length) (+ 6 teensy-width))
+;            (translate [-5 -30 0]))
+;       (->> (cube 5 (* 1.2 teensy2-length) 3)
+;            (translate [-3 -30 (- -1.5 (/ teensy-width 2))]))
+;       (->> (cube 5 (* 1.2 teensy2-length) 5)
+;            (translate [2 -30 (- -0.5 (/ teensy-width 2))]))
+;            )))
 
+(def teensy-holder 
+  (on-wall-place 0 20 
+    (union 
+      (->> (cube 5 (* 1.2 teensy2-length) (+ 6 teensy-width))
+           (translate [-2.5 -30 0]))
+      (->> (cube teensy-pcb-thickness (* 1.2 teensy2-length) 3)
+           (translate [(/ teensy-pcb-thickness 2) -30 (- -1.5 (/ teensy-width 2))]))
+      (->> (cube 4 (* 1.2 teensy2-length) 4)
+           (translate [(+ 2 teensy-pcb-thickness) -30 (-  -1 (/ teensy-width 2))]))
+      (->> (cube teensy-pcb-thickness (* 0.2 teensy2-length) 3)
+           (translate [(/ teensy-pcb-thickness 2) (+ (* 0.5 teensy2-length) -30) (+ 1.5 (/ teensy-width 2))]))
+      (->> (cube 4 (* 0.2 teensy2-length) 4)
+           (translate [(+ 2 teensy-pcb-thickness) (+ (* 0.5 teensy2-length) -30) (+  1 (/ teensy-width 2))]))
+           )))
+
+
+;; teensy info
+; base width - 18
+; height - 1.45
+; 
 
 (spit "repl.scad"
       (write-scad (union
@@ -481,7 +505,7 @@
                    thumb-connectors
                    (difference case-walls rj9-space)
                    rj9-holder
-                   teensy2
+                   teensy-holder
                   ;  thumbcaps
                   ;  caps
                    )))
