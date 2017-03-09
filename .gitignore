@@ -1,2 +1,9 @@
 *~
 \#*\#
+
+.repl-*
+.nrepl-*
+
+.lein-*
+
+/target
