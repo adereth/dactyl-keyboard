@@ -1,20 +1,41 @@
 (ns dactyl-keyboard.dactyl
   (:refer-clojure :exclude [use import])
-  (:require [scad-clj.scad :refer :all]
+  (:require [clojure.core.matrix :refer [array matrix mmul]]
+            [scad-clj.scad :refer :all]
             [scad-clj.model :refer :all]
             [unicode-math.core :refer :all]))
 
 
-(def nrows 6)
-(def ncols 6)                           ; it's not set up to change this
-(def lastrow (dec nrows))
-(def cornerrow (dec lastrow))
+;;;;;;;;;;;;;;;;;;;;;;
+;; Shape parameters ;;
+;;;;;;;;;;;;;;;;;;;;;;
+
+(def nrows 4)
+(def ncols 5)
+
 (def α (/ π 12))                        ; curvature of the columns
 (def β (/ π (if (= nrows 4) 26 36)))    ; curvature of the rows
-(def centerrow (- cornerrow 1))         ; controls front-back tilt
-(def centercol 3)                       ; controls left-right tilt / tenting
+(def centerrow (- nrows 3))             ; controls front-back tilt
+(def centercol 3)                       ; controls left-right tilt / tenting (higher number is more tenting)
 (def orthographic-x (> nrows 5))        ; for larger number of rows don't curve them in as much
-; (def orthographic-x true)
+; (def orthographic-x true)             ; controls curvature of rowS
+
+(defn column-offset [column] (cond
+  (= column 2) [0 2.82 -4.5]
+  (>= column 4) [0 -5.8 5.64]
+  :else [0 0 0]))
+
+(def thumb-offsets [6 -3 7])
+
+(def keyboard-z-offset 24)              ; controls height
+
+;;;;;;;;;;;;;;;;;;;;;;;
+;; General variables ;;
+;;;;;;;;;;;;;;;;;;;;;;;
+
+(def lastrow (dec nrows))
+(def cornerrow (dec lastrow))
+(def lastcol (dec ncols))
 
 ;;;;;;;;;;;;;;;;;
 ;; Switch Hole ;;
@@ -115,26 +136,20 @@
                               (translate [0 0 (- row-radius)])
                               (rotate (* α (- centerrow row)) [1 0 0])      
                               (translate [0 0 row-radius]))
-        column-offset (cond
-                        (= column 2) [0 2.82 -4.5]
-                        (>= column 4) [0 -5.8 5.64]
-                        ; (= column 22) [0 2.82 -4.5]
-                        ; (>= column 24) [0 -5.8 5.64]
-                        :else [0 0 0])
         column-angle (* β (- centercol column))   
         placed-shape (->> row-placed-shape
                           (translate [0 0 (- column-radius)])
                           (rotate column-angle [0 1 0])
                           (translate [0 0 column-radius])
-                          (translate column-offset))
+                          (translate (column-offset column)))
         column-z-delta (* column-radius (- 1 (Math/cos column-angle)))
         placed-shape-ortho (->> row-placed-shape
                                 (rotate column-angle [0 1 0])
                                 (translate [(- (* (- column centercol) column-x-delta)) 0 column-z-delta])
-                                (translate column-offset))]
+                                (translate (column-offset column)))]
     (->> (if orthographic-x placed-shape-ortho placed-shape)
          (rotate (/ π 12) [0 1 0])
-         (translate [0 0 24]))))
+         (translate [0 0 keyboard-z-offset]))))
 
 (def key-holes
   (apply union
@@ -153,6 +168,43 @@
                          (not= row lastrow))]
            (->> (sa-cap (if (= column 5) 1 1))
                 (key-place column row)))))
+
+(defn rotate-around-x [angle position] 
+  (mmul 
+   [[1 0 0]
+    [0 (Math/cos angle) (- (Math/sin angle))]
+    [0 (Math/sin angle)    (Math/cos angle)]]
+   position))
+
+(defn rotate-around-y [angle position] 
+  (mmul 
+   [[(Math/cos angle)     0 (Math/sin angle)]
+    [0                    1 0]
+    [(- (Math/sin angle)) 0 (Math/cos angle)]]
+   position))
+
+(defn key-position [column row position]
+  (let [row-position (->> position
+                          (map + [0 0 (- row-radius)])
+                          (rotate-around-x (* α (- centerrow row)))      
+                          (map + [0 0 row-radius]))
+        column-angle (* β (- centercol column))   
+        placed-position (->> row-position
+                             (map + [0 0 (- column-radius)])
+                             (rotate-around-y column-angle)
+                             (map + [0 0 column-radius])
+                             (map + (column-offset column)))
+        column-z-delta (* column-radius (- 1 (Math/cos column-angle)))
+        placed-position-ortho (->> row-position
+                                   (rotate-around-y column-angle)
+                                   (map + [(- (* (- column centercol) column-x-delta)) 0 column-z-delta])
+                                   (map + (column-offset column)))]
+    (->> (if orthographic-x placed-position-ortho placed-position)
+         (rotate-around-y (/ π 12))
+         (map + [0 0 24]))))
+
+; (pr (rotate-around-y π [10 0 1]))
+(pr (key-position 1 cornerrow [(/ mount-width 2) (- (/ mount-height 2)) 0]))
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; Web Connectors ;;
@@ -208,7 +260,11 @@
 ;;;;;;;;;;;;
 ;; Thumbs ;;
 ;;;;;;;;;;;;
-(def thumborigin [-23 -34 47])
+
+(def thumborigin 
+  (map + (key-position 1 cornerrow [(/ mount-width 2) (- (/ mount-height 2)) 0])
+         thumb-offsets))
+(pr thumborigin)
 
 (defn deg2rad [degrees]
   (* (/ degrees 180) pi))
@@ -408,23 +464,24 @@
 (def case-walls
   (union
    ; back wall
-   (for [x (range 0 6)] (key-wall-brace x 0 0 1 web-post-tl x       0 0 1 web-post-tr))
-   (for [x (range 1 6)] (key-wall-brace x 0 0 1 web-post-tl (dec x) 0 0 1 web-post-tr))
+   (for [x (range 0 ncols)] (key-wall-brace x 0 0 1 web-post-tl x       0 0 1 web-post-tr))
+   (for [x (range 1 ncols)] (key-wall-brace x 0 0 1 web-post-tl (dec x) 0 0 1 web-post-tr))
    (key-wall-brace 0 0 0 1 web-post-tl 0 0 -1 0 web-post-tl)
-   (key-wall-brace 5 0 0 1 web-post-tr 5 0 1 0 web-post-tr)
+   (key-wall-brace lastcol 0 0 1 web-post-tr lastcol 0 1 0 web-post-tr)
    ; right wall
-   (for [y (range 0 lastrow)] (key-wall-brace 5 y 1 0 web-post-tr 5 y       1 0 web-post-br))
-   (for [y (range 1 lastrow)] (key-wall-brace 5 (dec y) 1 0 web-post-br 5 y 1 0 web-post-tr))
-   (key-wall-brace 5 cornerrow 0 -1 web-post-br 5 cornerrow 1 0 web-post-br)
+   (for [y (range 0 lastrow)] (key-wall-brace lastcol y 1 0 web-post-tr lastcol y       1 0 web-post-br))
+   (for [y (range 1 lastrow)] (key-wall-brace lastcol (dec y) 1 0 web-post-br lastcol y 1 0 web-post-tr))
+   (key-wall-brace lastcol cornerrow 0 -1 web-post-br lastcol cornerrow 1 0 web-post-br)
    ; left wall
    (for [y (range 0 lastrow)] (key-wall-brace 0 y -1 0 web-post-tl 0 y       -1 0 web-post-bl))
    (for [y (range 1 lastrow)] (key-wall-brace 0 (dec y) -1 0 web-post-bl 0 y -1 0 web-post-tl))
    ; front wall
+   (key-wall-brace 0 0 0 1 web-post-tl 0 0 -1 0 web-post-tl)
+   (key-wall-brace lastcol 0 0 1 web-post-tr lastcol 0 1 0 web-post-tr)
    (key-wall-brace 3 lastrow   0 -1 web-post-bl 3 lastrow 0.5 -1 web-post-br)
-   (key-wall-brace 4 cornerrow 0 -1 web-post-bl 4 cornerrow 0 -1 web-post-br)
-   (key-wall-brace 5 cornerrow 0 -1 web-post-bl 5 cornerrow 0 -1 web-post-br)
    (key-wall-brace 3 lastrow 0.5 -1 web-post-br 4 cornerrow 1 -1 web-post-bl)
-   (key-wall-brace 4 cornerrow 0 -1 web-post-br 5 cornerrow 0 -1 web-post-bl)
+   (for [x (range 4 ncols)] (key-wall-brace x cornerrow 0 -1 web-post-bl x       cornerrow 0 -1 web-post-br))
+   (for [x (range 5 ncols)] (key-wall-brace x cornerrow 0 -1 web-post-bl (dec x) cornerrow 0 -1 web-post-br))
    ; thumb walls
    (wall-brace thumb-mr-place  0 -1 web-post-br thumb-tr-place  0 -1 thumb-post-br)
    (wall-brace thumb-mr-place  0 -1 web-post-br thumb-mr-place  0 -1 web-post-bl)

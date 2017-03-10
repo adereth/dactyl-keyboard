@@ -1,11 +1,21 @@
 # The Dactyl-ManuForm Keyboard
 This is a fork of the [Dactyl](https://github.com/adereth/dactyl-keyboard), a parameterized, split-hand, concave, columnar, ergonomic keyboard.
 
-The main change is that the thumb cluster was adapted from the [ManuForm keyboard](https://github.com/jeffgran/ManuForm) ([geekhack](https://geekhack.org/index.php?topic=46015.0)). The walls were changed to just drop to the floor. The keyboard is paramaterized to allow either 4, 5, or 6 main rows. I plan to try the four-row version. See the following model files:
+The main change is that the thumb cluster was adapted from the [ManuForm keyboard](https://github.com/jeffgran/ManuForm) ([geekhack](https://geekhack.org/index.php?topic=46015.0)). The walls were changed to just drop to the floor. The keyboard is paramaterized to allow the following: 
 
-* [4 rows](https://github.com/tshort/dactyl-keyboard/blob/master/things/right-4-rows.stl)
-* [5 rows](https://github.com/tshort/dactyl-keyboard/blob/master/things/right-5-rows.stl)
-* [6 rows](https://github.com/tshort/dactyl-keyboard/blob/master/things/right-6-rows.stl)
+* Rows: 4 - 6 
+* Columns: 5 and up
+* Row curvature
+* Column curvature
+* Row tilt (tenting)
+* Column tilt
+* Column offsets
+
+I plan to try the 4x6 version or maybe the 4x5 version. The default has more tenting than the Dactyl. See the following model files:
+
+* [4x6](https://github.com/tshort/dactyl-keyboard/blob/master/things/right-4-rows.stl)
+* [5x6](https://github.com/tshort/dactyl-keyboard/blob/master/things/right-5-rows.stl)
+* [6x6](https://github.com/tshort/dactyl-keyboard/blob/master/things/right-6-rows.stl)
 
 **This is still a work in progress.** 
 
