@@ -5,15 +5,16 @@
             [unicode-math.core :refer :all]))
 
 
-(def nrows 4)
-(def ncols 6)
+(def nrows 6)
+(def ncols 6)                           ; it's not set up to change this
 (def lastrow (dec nrows))
 (def cornerrow (dec lastrow))
 (def α (/ π 12))                        ; curvature of the columns
 (def β (/ π (if (= nrows 4) 26 36)))    ; curvature of the rows
 (def centerrow (- cornerrow 1))         ; controls front-back tilt
 (def centercol 3)                       ; controls left-right tilt / tenting
-
+(def orthographic-x (> nrows 5))        ; for larger number of rows don't curve them in as much
+; (def orthographic-x true)
 
 ;;;;;;;;;;;;;;;;;
 ;; Switch Hole ;;
@@ -107,6 +108,7 @@
 (def column-radius (+ (/ (/ (+ mount-width 2.0) 2)
                          (Math/sin (/ β 2)))
                       cap-top-height))
+(def column-x-delta (+ -1 (- (* column-radius (Math/sin β)))))
 
 (defn key-place [column row shape]
   (let [row-placed-shape (->> shape
@@ -116,14 +118,21 @@
         column-offset (cond
                         (= column 2) [0 2.82 -4.5]
                         (>= column 4) [0 -5.8 5.64]
+                        ; (= column 22) [0 2.82 -4.5]
+                        ; (>= column 24) [0 -5.8 5.64]
                         :else [0 0 0])
         column-angle (* β (- centercol column))   
         placed-shape (->> row-placed-shape
                           (translate [0 0 (- column-radius)])
                           (rotate column-angle [0 1 0])
                           (translate [0 0 column-radius])
-                          (translate column-offset))]
-    (->> placed-shape
+                          (translate column-offset))
+        column-z-delta (* column-radius (- 1 (Math/cos column-angle)))
+        placed-shape-ortho (->> row-placed-shape
+                                (rotate column-angle [0 1 0])
+                                (translate [(- (* (- column centercol) column-x-delta)) 0 column-z-delta])
+                                (translate column-offset))]
+    (->> (if orthographic-x placed-shape-ortho placed-shape)
          (rotate (/ π 12) [0 1 0])
          (translate [0 0 24]))))
 
@@ -465,47 +474,51 @@
 (def teensy-pcb-thickness 1.6) 
 (def teensy-offset-height 5)
 
-; (def teensy-holder 
-;   (on-wall-place 0 20 
-;     (union 
-;       (->> (cube 5 (* 1.2 teensy2-length) (+ 6 teensy-width))
-;            (translate [-5 -30 0]))
-;       (->> (cube 5 (* 1.2 teensy2-length) 3)
-;            (translate [-3 -30 (- -1.5 (/ teensy-width 2))]))
-;       (->> (cube 5 (* 1.2 teensy2-length) 5)
-;            (translate [2 -30 (- -0.5 (/ teensy-width 2))]))
-;            )))
-
 (def teensy-holder 
-  (on-wall-place 0 20 
-    (union 
-      (->> (cube 5 (* 1.2 teensy2-length) (+ 6 teensy-width))
-           (translate [-2.5 -30 0]))
-      (->> (cube teensy-pcb-thickness (* 1.2 teensy2-length) 3)
-           (translate [(/ teensy-pcb-thickness 2) -30 (- -1.5 (/ teensy-width 2))]))
-      (->> (cube 4 (* 1.2 teensy2-length) 4)
-           (translate [(+ 2 teensy-pcb-thickness) -30 (-  -1 (/ teensy-width 2))]))
-      (->> (cube teensy-pcb-thickness (* 0.2 teensy2-length) 3)
-           (translate [(/ teensy-pcb-thickness 2) (+ (* 0.5 teensy2-length) -30) (+ 1.5 (/ teensy-width 2))]))
-      (->> (cube 4 (* 0.2 teensy2-length) 4)
-           (translate [(+ 2 teensy-pcb-thickness) (+ (* 0.5 teensy2-length) -30) (+  1 (/ teensy-width 2))]))
-           )))
+    (on-wall-place 0 20 
+      (translate [-5 0 0] 
+        (union 
+          (->> (cube 3 (* 1.2 teensy2-length) (+ 6 teensy-width))
+               (translate [-1.5 -30 0]))
+          (->> (cube teensy-pcb-thickness (* 1.2 teensy2-length) 3)
+               (translate [(/ teensy-pcb-thickness 2) -30 (- -1.5 (/ teensy-width 2))]))
+          (->> (cube 4 (* 1.2 teensy2-length) 4)
+               (translate [(+ 2 teensy-pcb-thickness) -30 (-  -1 (/ teensy-width 2))]))
+          (->> (cube teensy-pcb-thickness (* 0.2 teensy2-length) 3)
+               (translate [(/ teensy-pcb-thickness 2) (+ (* 0.5 teensy2-length) -30) (+ 1.5 (/ teensy-width 2))]))
+          (->> (cube 4 (* 0.2 teensy2-length) 4)
+               (translate [(+ 2 teensy-pcb-thickness) (+ (* 0.5 teensy2-length) -30) (+  1 (/ teensy-width 2))]))
+           ))))
 
+(def usb-cutout
+  (let [hole-height 6.2
+        side-radius (/ hole-height 2)
+        hole-width 10.75        
+        side-cylinder (->> (cylinder side-radius teensy-length)
+                           (with-fn 20)
+                           (translate [(/ (- hole-width hole-height) 2) 0 0]))]
+    (->> (hull side-cylinder
+               (mirror [-1 0 0] side-cylinder))
+         (rotate (/ π 2) [1 0 0])
+         (rotate (/ π 2) [0 1 0])
+        ;  (translate [0 (/ teensy-length 2) (- side-radius)])
+        ;  (translate [0 0 (- 1)])
+         (on-wall-place 0 20))))
 
 ;; teensy info
 ; base width - 18
 ; height - 1.45
 ; 
 
-(spit "repl.scad"
+(spit "things/right.scad"
       (write-scad (union
                    key-holes
                    connectors
                    thumb
                    thumb-connectors
-                   (difference case-walls rj9-space)
+                   (difference case-walls rj9-space usb-cutout)
                    rj9-holder
-                   teensy-holder
+                   (if (= nrows 4) teensy-holder)
                   ;  thumbcaps
                   ;  caps
                    )))
