@@ -1,7 +1,17 @@
-# The Dactyl Keyboard
-The Dactyl is a parameterized, split-hand, concave, columnar, ergonomic keyboard.
+# The Dactyl-ManuForm Keyboard
+This is a fork of the [Dactyl](https://github.com/adereth/dactyl-keyboard), a parameterized, split-hand, concave, columnar, ergonomic keyboard.
 
-<img src="https://raw.githubusercontent.com/adereth/dactyl-cave/master/resources/glamourshot.png"/>
+The main change is that the thumb cluster was adapted from the [ManuForm keyboard](https://github.com/jeffgran/ManuForm) ([geekhack](https://geekhack.org/index.php?topic=46015.0)). The walls were changed to just drop to the floor. The keyboard is paramaterized to allow either 4, 5, or 6 main rows. I plan to try the four-row version. See the following model files:
+
+* [4 rows](https://github.com/tshort/dactyl-keyboard/blob/master/things/right-4-rows.stl)
+* [5 rows](https://github.com/tshort/dactyl-keyboard/blob/master/things/right-5-rows.stl)
+* [6 rows](https://github.com/tshort/dactyl-keyboard/blob/master/things/right-6-rows.stl)
+
+**This is still a work in progress.** 
+
+I plan to use a Teensy 2++ in each half. Then, I have enough channels to wire straight to each key switch. Diodes are not needed. Then, I can connect them with a serial connection, and adapt the QMK firmware for the [Let's split keyboard](https://github.com/qmk/qmk_firmware/tree/master/keyboards/lets_split) that implements this approach. Each half can be master.
+
+This doesn't have a bottom. I may or may not add one. I have many test prints to try.
 
 ## Assembly
 
