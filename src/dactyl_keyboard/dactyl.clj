@@ -563,7 +563,7 @@
          (on-wall-place 0 20))))
 
 
-(defn hex-spacer [column row radius] 
+(defn hex-spacer [column row radius height] 
   (let [position (key-position column row [0 0 0])
         column-offset (/ mount-width 2)
         row-offset    (/ mount-height 2)
@@ -573,14 +573,10 @@
         shift-down    (and (not (or shift-right shift-left)) (= row lastrow))
         is-vertical   (or shift-left shift-right)
         col-angle     (+ (* β (- centercol column)) (/ π 12))
-        row-angle     (* α (- row centerrow))
-        height 10]
+        row-angle     (* α (- row centerrow))]
     (->> (cylinder radius height)
          (rotate (if is-vertical (/ π 6) 0) [0 0 1])
          (translate [(first position) (second position) (/ height 2)])
-      ;    (translate [(* (if shift-right 1 (if shift-left -1 0)) (- column-offset (* wall-offset (Math/abs (Math/sin col-angle)))))
-      ;                (* (if shift-up    1 (if shift-down -1 0)) (- row-offset    (* wall-offset (Math/abs (Math/sin row-angle)))))
-                  ;    0])
          (translate [(* (if shift-right 1 (if shift-left -1 0)) column-offset)
                      (* (if shift-up    1 (if shift-down -1 0)) row-offset)
                      0])
@@ -589,16 +585,17 @@
                      0])
          (with-fn 6))))
 
-(defn hex-spacer-shapes [radius]
-  (union (hex-spacer 0 0         radius)
-         (hex-spacer 0 cornerrow radius)
-         (hex-spacer 3 lastrow   radius)
-         (hex-spacer 2 0         radius)
-         (hex-spacer lastcol (dec cornerrow) radius)
+(defn hex-spacer-shapes [radius height]
+  (union (hex-spacer 0 0         radius height)
+         (hex-spacer 0 cornerrow radius height)
+         (hex-spacer 3 lastrow   radius height)
+         (hex-spacer 2 0         radius height)
+         (hex-spacer lastcol (dec cornerrow) radius height)
          ))
+(def hex-spacer-height 10)
 (def hex-spacer-radius (/ 5.42 2))
-(def hex-spacer-holes  (hex-spacer-shapes hex-spacer-radius))
-(def hex-spacer-outers (hex-spacer-shapes (+ hex-spacer-radius 1.6)))
+(def hex-spacer-holes  (hex-spacer-shapes hex-spacer-radius hex-spacer-height))
+(def hex-spacer-outers (hex-spacer-shapes (+ hex-spacer-radius 1.6) (+ hex-spacer-height 1.6)))
 
 
 ;; teensy info
