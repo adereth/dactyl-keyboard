@@ -11,13 +11,14 @@ The main change is that the thumb cluster was adapted from the [ManuForm keyboar
 * Column tilt
 * Column offsets
 
-I plan to try the 4x6 version or maybe the 4x5 version. The default has more tenting than the Dactyl. See the following model files:
+I plan to try the 4x6 version or maybe the 4x5 version. The default has more tenting than the Dactyl. See the following model files for configurations that may be most common:
 
-* [4x6](https://github.com/tshort/dactyl-keyboard/blob/master/things/right-4-rows.stl)
-* [5x6](https://github.com/tshort/dactyl-keyboard/blob/master/things/right-5-rows.stl)
-* [6x6](https://github.com/tshort/dactyl-keyboard/blob/master/things/right-6-rows.stl)
+* [4x5](https://github.com/tshort/dactyl-keyboard/blob/master/things/right-4x5.stl)
+* [4x6](https://github.com/tshort/dactyl-keyboard/blob/master/things/right-4x6.stl)
+* [5x6](https://github.com/tshort/dactyl-keyboard/blob/master/things/right-5x6.stl)
+* [6x6](https://github.com/tshort/dactyl-keyboard/blob/master/things/right-6x6.stl)
 
-**This is still a work in progress.** 
+**This is still a work in progress.** I have not started on wiring, and I don't know if everything fits.
 
 I plan to use a Teensy 2++ in each half. Then, I have enough channels to wire straight to each key switch. Diodes are not needed. Then, I can connect them with a serial connection, and adapt the QMK firmware for the [Let's split keyboard](https://github.com/qmk/qmk_firmware/tree/master/keyboards/lets_split) that implements this approach. Each half can be master.
 
