@@ -623,3 +623,8 @@
                    )))
                    
 
+(spit "things/test.scad"
+      (write-scad (intersection (translate [29 -5 0] (cube 30 30 30))
+                   (difference (union case-walls hex-spacer-outers) 
+                               hex-spacer-holes)
+                   )))
