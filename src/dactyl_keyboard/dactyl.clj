@@ -611,13 +611,13 @@
                    connectors
                    thumb
                    thumb-connectors
-                   (difference case-walls 
+                   (difference (union case-walls hex-spacer-outers) 
                                rj9-space 
                                usb-cutout 
                                hex-spacer-holes)
                    rj9-holder
                    (if (= nrows 4) teensy-holder)
-                   hex-spacer-outers 
+                   
                   ;  thumbcaps
                   ;  caps
                    )))
