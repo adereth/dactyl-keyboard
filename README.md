@@ -21,7 +21,7 @@ I plan to try the 4x6 version or maybe the 4x5 version. The default has more ten
 
 I plan to use a Teensy 2++ in each half. Then, I have enough channels to wire straight to each key switch. Diodes are not needed. Then, I can connect them with a serial connection, and adapt the QMK firmware for the [Let's split keyboard](https://github.com/qmk/qmk_firmware/tree/master/keyboards/lets_split) that implements this approach. Each half can be master.
 
-This doesn't have a bottom. I may or may not add one. I have many test prints to try.
+This doesn't have a bottom. It has hex holes designed for 9- or 10-mm long M3 female-female spacers. Then, I can use a M3 wafer-head screws to connect a bottom plate. If wires aren't dangling, a bottom plate may not be needed.
 
 ## Assembly
 

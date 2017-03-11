@@ -519,22 +519,24 @@
            (translate [0 (/ mount-height 2) wall-offset])
            ))))
 
+(def rj9-vertical-offset (- (last (key-position 0 0 [0 (/ mount-height 2) 0])) 40))
 (def rj9-cube   (cube 14.78 13 22.38))
-(def rj9-space  (on-wall-place 1 20 rj9-cube))
-(def rj9-holder (on-wall-place 1 20 
+(def rj9-space  (on-wall-place 1 rj9-vertical-offset rj9-cube))
+(def rj9-holder (on-wall-place 1 rj9-vertical-offset 
                   (difference rj9-cube
                               (union (translate [0 2 0] (cube 10.78  9 18.38))
                                      (translate [0 0 5] (cube 10.78 13  5))))))
 
-(def teensy-width 20)  ; was 20
+(def teensy-width 20)  
 (def teensy-height 12)
 (def teensy-length 33)
 (def teensy2-length 53)
 (def teensy-pcb-thickness 1.6) 
 (def teensy-offset-height 5)
+(def teensy-vertical-offset )
 
 (def teensy-holder 
-    (on-wall-place 0 20 
+    (on-wall-place 0 rj9-vertical-offset
       (translate [-5 0 0] 
         (union 
           (->> (cube 3 (* 1.2 teensy2-length) (+ 6 teensy-width))
@@ -560,7 +562,7 @@
                (mirror [-1 0 0] side-cylinder))
          (rotate (/ π 2) [1 0 0])
          (rotate (/ π 2) [0 1 0])
-         (on-wall-place 0 20))))
+         (on-wall-place 0 rj9-vertical-offset))))
 
 
 (defn hex-spacer [column row radius height] 
@@ -589,7 +591,7 @@
   (union (hex-spacer 0 0         radius height)
          (hex-spacer 0 cornerrow radius height)
          (hex-spacer 3 lastrow   radius height)
-         (hex-spacer 2 0         radius height)
+         (hex-spacer 3 0         radius height)
          (hex-spacer lastcol (dec cornerrow) radius height)
          ))
 (def hex-spacer-height 10)
@@ -609,7 +611,10 @@
                    connectors
                    thumb
                    thumb-connectors
-                   (difference case-walls rj9-space usb-cutout hex-spacer-holes)
+                   (difference case-walls 
+                               rj9-space 
+                               usb-cutout 
+                               hex-spacer-holes)
                    rj9-holder
                    (if (= nrows 4) teensy-holder)
                    hex-spacer-outers 
