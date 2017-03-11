@@ -1,7 +1,7 @@
 # The Dactyl-ManuForm Keyboard
 This is a fork of the [Dactyl](https://github.com/adereth/dactyl-keyboard), a parameterized, split-hand, concave, columnar, ergonomic keyboard.
 
-<blockquote class="imgur-embed-pub" lang="en" data-id="a/3DYTE"><a href="//imgur.com/3DYTE"></a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
+<img src="https://imgur.com/a/3DYTE"/>
 
 The main change is that the thumb cluster was adapted from the [ManuForm keyboard](https://github.com/jeffgran/ManuForm) ([geekhack](https://geekhack.org/index.php?topic=46015.0)). The walls were changed to just drop to the floor. The keyboard is paramaterized to allow the following: 
 
