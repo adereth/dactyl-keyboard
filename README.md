@@ -20,7 +20,7 @@ I plan to try the 4x6 version or maybe the 4x5 version. The default has more ten
 * [5x6](https://github.com/tshort/dactyl-keyboard/blob/master/things/right-5x6.stl)
 * [6x6](https://github.com/tshort/dactyl-keyboard/blob/master/things/right-6x6.stl)
 
-**This is still a work in progress.** I have not started on wiring, and I don't know if everything fits.
+**This is still a work in progress.** I have not started on wiring, and I don't know if everything fits. The pinky columns and the thumb cluster doesn't fit right together for my hands. I need to offset the pinkies more (like the ManuForm) or rotate the thumb keys a bit.
 
 I plan to use a Teensy 2++ in each half. Then, I have enough channels to wire straight to each key switch. Diodes are not needed. Then, I can connect them with a serial connection, and adapt the QMK firmware for the [Let's split keyboard](https://github.com/qmk/qmk_firmware/tree/master/keyboards/lets_split) that implements this approach. Each half can be master.
 
