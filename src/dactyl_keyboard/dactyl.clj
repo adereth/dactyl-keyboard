@@ -204,7 +204,7 @@
          (map + [0 0 24]))))
 
 ; (pr (rotate-around-y π [10 0 1]))
-(pr (key-position 1 cornerrow [(/ mount-width 2) (- (/ mount-height 2)) 0]))
+; (pr (key-position 1 cornerrow [(/ mount-width 2) (- (/ mount-height 2)) 0]))
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; Web Connectors ;;
@@ -264,7 +264,7 @@
 (def thumborigin 
   (map + (key-position 1 cornerrow [(/ mount-width 2) (- (/ mount-height 2)) 0])
          thumb-offsets))
-(pr thumborigin)
+; (pr thumborigin)
 
 (defn deg2rad [degrees]
   (* (/ degrees 180) pi))
@@ -439,23 +439,25 @@
 (defn bottom-hull [& p]
   (hull p (bottom 10.001 p)))
 
+(def wall-offset -15)
+
 (defn wall-brace [place1 dx1 dy1 post1 place2 dx2 dy2 post2]
   (union
     (hull
       (place1 post1)
-      (place1 (translate [0 0 -15] post1))
+      (place1 (translate [0 0 wall-offset] post1))
       (place1 (translate [(* dx1 5) (* dy1 5) -4] post1))
-      (place1 (translate [(* dx1 5) (* dy1 5) -15] post1))
+      (place1 (translate [(* dx1 5) (* dy1 5) wall-offset] post1))
       (place2 post2)
-      (place2 (translate [0 0 -15] post2))
+      (place2 (translate [0 0 wall-offset] post2))
       (place2 (translate [(* dx2 5) (* dy2 5) -4] post2))
-      (place2 (translate [(* dx2 5) (* dy2 5) -15] post2)))
+      (place2 (translate [(* dx2 5) (* dy2 5) wall-offset] post2)))
     (bottom-hull
-      (place1 (translate [(* dx1 5) (* dy1 5) -15] post1))
-      (place1 (translate [0         0         -15] post1))
-      (place1 (translate [(* dx1 5) (* dy1 5) -15] post1))
-      (place2 (translate [0         0         -15] post2))
-      (place2 (translate [(* dx2 5) (* dy2 5) -15] post2)))))
+      (place1 (translate [(* dx1 5) (* dy1 5) wall-offset] post1))
+      (place1 (translate [0         0         wall-offset] post1))
+      (place1 (translate [(* dx1 5) (* dy1 5) wall-offset] post1))
+      (place2 (translate [0         0         wall-offset] post2))
+      (place2 (translate [(* dx2 5) (* dy2 5) wall-offset] post2)))))
 
 (defn key-wall-brace [x1 y1 dx1 dy1 post1 x2 y2 dx2 dy2 post2] 
   (wall-brace (partial key-place x1 y1) dx1 dy1 post1 
@@ -514,7 +516,7 @@
       (->> shape
            (rotate (+ (* β (- centercol column)) (/ π 12)) [0 -1 0])      
            (rotate (* α centerrow) [-1 0 0])      
-           (translate [0 (/ mount-height 2) -15])
+           (translate [0 (/ mount-height 2) wall-offset])
            ))))
 
 (def rj9-cube   (cube 14.78 13 22.38))
@@ -560,6 +562,45 @@
          (rotate (/ π 2) [0 1 0])
          (on-wall-place 0 20))))
 
+
+(defn hex-spacer [column row radius] 
+  (let [position (key-position column row [0 0 0])
+        column-offset (/ mount-width 2)
+        row-offset    (/ mount-height 2)
+        shift-right   (= column lastcol)
+        shift-left    (= column 0)
+        shift-up      (and (not (or shift-right shift-left)) (= row 0))
+        shift-down    (and (not (or shift-right shift-left)) (= row lastrow))
+        is-vertical   (or shift-left shift-right)
+        col-angle     (+ (* β (- centercol column)) (/ π 12))
+        row-angle     (* α (- row centerrow))
+        height 10]
+    (->> (cylinder radius height)
+         (rotate (if is-vertical (/ π 6) 0) [0 0 1])
+         (translate [(first position) (second position) (/ height 2)])
+      ;    (translate [(* (if shift-right 1 (if shift-left -1 0)) (- column-offset (* wall-offset (Math/abs (Math/sin col-angle)))))
+      ;                (* (if shift-up    1 (if shift-down -1 0)) (- row-offset    (* wall-offset (Math/abs (Math/sin row-angle)))))
+                  ;    0])
+         (translate [(* (if shift-right 1 (if shift-left -1 0)) column-offset)
+                     (* (if shift-up    1 (if shift-down -1 0)) row-offset)
+                     0])
+         (translate [(* wall-offset (Math/sin col-angle))
+                     (* wall-offset (Math/sin row-angle))
+                     0])
+         (with-fn 6))))
+
+(defn hex-spacer-shapes [radius]
+  (union (hex-spacer 0 0         radius)
+         (hex-spacer 0 cornerrow radius)
+         (hex-spacer 3 lastrow   radius)
+         (hex-spacer 2 0         radius)
+         (hex-spacer lastcol (dec cornerrow) radius)
+         ))
+(def hex-spacer-radius (/ 5.42 2))
+(def hex-spacer-holes  (hex-spacer-shapes hex-spacer-radius))
+(def hex-spacer-outers (hex-spacer-shapes (+ hex-spacer-radius 1.6)))
+
+
 ;; teensy info
 ; base width - 18
 ; height - 1.45
@@ -571,9 +612,10 @@
                    connectors
                    thumb
                    thumb-connectors
-                   (difference case-walls rj9-space usb-cutout)
+                   (difference case-walls rj9-space usb-cutout hex-spacer-holes)
                    rj9-holder
                    (if (= nrows 4) teensy-holder)
+                   hex-spacer-outers 
                   ;  thumbcaps
                   ;  caps
                    )))
