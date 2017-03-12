@@ -576,7 +576,8 @@
         is-vertical   (or shift-left shift-right)
         col-angle     (+ (* β (- centercol column)) (/ π 12))
         row-angle     (* α (- row centerrow))]
-    (->> (cylinder radius height)
+    (->> (union (cylinder radius height)
+                (translate [0 0 (/ height 2)] (sphere radius)))
          (rotate (if is-vertical (/ π 6) 0) [0 0 1])
          (translate [(first position) (second position) (/ height 2)])
          (translate [(* (if shift-right 1 (if shift-left -1 0)) column-offset)
@@ -595,7 +596,7 @@
          (hex-spacer lastcol (dec cornerrow) radius height)
          ))
 (def hex-spacer-height 10)
-(def hex-spacer-radius (/ 5.42 2))
+(def hex-spacer-radius (/ 5.9 2))
 (def hex-spacer-holes  (hex-spacer-shapes hex-spacer-radius hex-spacer-height))
 (def hex-spacer-outers (hex-spacer-shapes (+ hex-spacer-radius 1.6) (+ hex-spacer-height 1.6)))
 
@@ -628,3 +629,6 @@
                    (difference (union case-walls hex-spacer-outers) 
                                hex-spacer-holes)
                    )))
+
+(spit "things/test.scad"
+      (write-scad hex-spacer-holes))
