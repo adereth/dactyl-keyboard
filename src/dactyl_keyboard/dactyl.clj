@@ -6,19 +6,24 @@
             [unicode-math.core :refer :all]))
 
 
+(defn deg2rad [degrees]
+  (* (/ degrees 180) pi))
+
 ;;;;;;;;;;;;;;;;;;;;;;
 ;; Shape parameters ;;
 ;;;;;;;;;;;;;;;;;;;;;;
 
 (def nrows 4)
-(def ncols 5)
+(def ncols 6)
 
 (def α (/ π 12))                        ; curvature of the columns
-(def β (/ π (if (= nrows 4) 26 36)))    ; curvature of the rows
+(def β (/ π 36))                        ; curvature of the rows
 (def centerrow (- nrows 3))             ; controls front-back tilt
 (def centercol 3)                       ; controls left-right tilt / tenting (higher number is more tenting)
 (def orthographic-x (> nrows 5))        ; for larger number of rows don't curve them in as much
-; (def orthographic-x true)             ; controls curvature of rowS
+; (def orthographic-x true)             ; controls curvature of rows
+(def maltron-style true)                ; use fixed angles for columns
+(def maltron-angles [(deg2rad 10) (deg2rad 10) 0 0 0 (deg2rad -15) (deg2rad -15)])  ; starting point: http://patentimages.storage.googleapis.com/EP0219944A2/imgf0002.png 
 
 (defn column-offset [column] (cond
   (= column 2) [0 2.82 -4.5]
@@ -130,6 +135,7 @@
                          (Math/sin (/ β 2)))
                       cap-top-height))
 (def column-x-delta (+ -1 (- (* column-radius (Math/sin β)))))
+(def column-base-angle (* β (- centercol 2)))
 
 (defn key-place [column row shape]
   (let [row-placed-shape (->> shape
@@ -144,10 +150,10 @@
                           (translate (column-offset column)))
         column-z-delta (* column-radius (- 1 (Math/cos column-angle)))
         placed-shape-ortho (->> row-placed-shape
-                                (rotate column-angle [0 1 0])
+                                (rotate (if maltron-style (+ column-base-angle (nth maltron-angles column)) column-angle) [0 1 0])
                                 (translate [(- (* (- column centercol) column-x-delta)) 0 column-z-delta])
                                 (translate (column-offset column)))]
-    (->> (if orthographic-x placed-shape-ortho placed-shape)
+    (->> (if (or maltron-style orthographic-x) placed-shape-ortho placed-shape)
          (rotate (/ π 12) [0 1 0])
          (translate [0 0 keyboard-z-offset]))))
 
@@ -196,10 +202,10 @@
                              (map + (column-offset column)))
         column-z-delta (* column-radius (- 1 (Math/cos column-angle)))
         placed-position-ortho (->> row-position
-                                   (rotate-around-y column-angle)
+                                   (rotate-around-y (if maltron-style (+ column-base-angle (nth maltron-angles column)) column-angle))
                                    (map + [(- (* (- column centercol) column-x-delta)) 0 column-z-delta])
                                    (map + (column-offset column)))]
-    (->> (if orthographic-x placed-position-ortho placed-position)
+    (->> (if (or maltron-style orthographic-x) placed-position-ortho placed-position)
          (rotate-around-y (/ π 12))
          (map + [0 0 24]))))
 
@@ -265,9 +271,6 @@
   (map + (key-position 1 cornerrow [(/ mount-width 2) (- (/ mount-height 2)) 0])
          thumb-offsets))
 ; (pr thumborigin)
-
-(defn deg2rad [degrees]
-  (* (/ degrees 180) pi))
 
 (defn thumb-tr-place [shape]
   (->> shape
@@ -612,15 +615,15 @@
                    connectors
                    thumb
                    thumb-connectors
-                   (difference (union case-walls hex-spacer-outers) 
-                               rj9-space 
-                               usb-cutout 
-                               hex-spacer-holes)
+                  ;  (difference (union case-walls hex-spacer-outers) 
+                  ;              rj9-space 
+                  ;              usb-cutout 
+                  ;              hex-spacer-holes)
                    rj9-holder
                    (if (= nrows 4) teensy-holder)
                    
-                  ;  thumbcaps
-                  ;  caps
+                   thumbcaps
+                   caps
                    )))
                    
 
