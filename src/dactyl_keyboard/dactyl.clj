@@ -453,24 +453,25 @@
   (hull p (bottom 0.001 p)))
 
 (def wall-offset -15)
+(def wall-thickness 2)
 
 (defn wall-brace [place1 dx1 dy1 post1 place2 dx2 dy2 post2]
   (union
     (hull
       (place1 post1)
       (place1 (translate [0 0 wall-offset] post1))
-      (place1 (translate [(* dx1 5) (* dy1 5) -4] post1))
-      (place1 (translate [(* dx1 5) (* dy1 5) wall-offset] post1))
+      (place1 (translate [(* dx1 wall-thickness) (* dy1 wall-thickness) -4] post1))
+      (place1 (translate [(* dx1 wall-thickness) (* dy1 wall-thickness) wall-offset] post1))
       (place2 post2)
       (place2 (translate [0 0 wall-offset] post2))
-      (place2 (translate [(* dx2 5) (* dy2 5) -4] post2))
-      (place2 (translate [(* dx2 5) (* dy2 5) wall-offset] post2)))
+      (place2 (translate [(* dx2 wall-thickness) (* dy2 wall-thickness) -4] post2))
+      (place2 (translate [(* dx2 wall-thickness) (* dy2 wall-thickness) wall-offset] post2)))
     (bottom-hull
-      (place1 (translate [(* dx1 5) (* dy1 5) wall-offset] post1))
+      (place1 (translate [(* dx1 wall-thickness) (* dy1 wall-thickness) wall-offset] post1))
       (place1 (translate [0         0         wall-offset] post1))
-      (place1 (translate [(* dx1 5) (* dy1 5) wall-offset] post1))
+      (place1 (translate [(* dx1 wall-thickness) (* dy1 wall-thickness) wall-offset] post1))
       (place2 (translate [0         0         wall-offset] post2))
-      (place2 (translate [(* dx2 5) (* dy2 5) wall-offset] post2)))))
+      (place2 (translate [(* dx2 wall-thickness) (* dy2 wall-thickness) wall-offset] post2)))))
 
 (defn key-wall-brace [x1 y1 dx1 dy1 post1 x2 y2 dx2 dy2 post2] 
   (wall-brace (partial key-place x1 y1) dx1 dy1 post1 
