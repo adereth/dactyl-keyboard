@@ -32,7 +32,7 @@
 
 (def thumb-offsets [6 -3 7])
 
-(def keyboard-z-offset  24)              ; controls height; original=24
+(def keyboard-z-offset  4)              ; controls height; original=24
 
 (def extra-width 2.5)                   ; extra space between the base of keys; original= 2
 (def extra-height 1.0)                  ; origin= 1/2
@@ -211,7 +211,7 @@
                                    (map + (column-offset column)))]
     (->> (if (or maltron-style orthographic-x) placed-position-ortho placed-position)
          (rotate-around-y (/ π 12))
-         (map + [0 0 24]))))
+         (map + [0 0 keyboard-z-offset]))))
 
 ; (pr (rotate-around-y π [10 0 1]))
 (pr (key-position 1 cornerrow [(/ mount-width 2) (- (/ mount-height 2)) 0]))
