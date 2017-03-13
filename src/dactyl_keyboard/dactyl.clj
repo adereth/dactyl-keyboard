@@ -447,13 +447,13 @@
 (defn bottom [height p]
   (->> (project p)
        (extrude-linear {:height height :twist 0 :convexity 0})
-       (translate [0 0 (/ height 2)])))
+       (translate [0 0 (- (/ height 2) 10)])))
 
 (defn bottom-hull [& p]
   (hull p (bottom 0.001 p)))
 
 (def wall-offset -15)
-(def wall-thickness 2)
+(def wall-thickness 2)     ; originally 5
 
 (defn wall-brace [place1 dx1 dy1 post1 place2 dx2 dy2 post2]
   (union
@@ -548,9 +548,9 @@
 (def teensy2-length 53)
 (def teensy-pcb-thickness 1.6) 
 (def teensy-offset-height 5)
-(def teensy-holder-length 69)
-(def teensy-holder-offset (- 1 (/ teensy-holder-length 2)))
-(def teensy-holder-top-length 20)
+(def teensy-holder-length 68)
+(def teensy-holder-offset (- 0 (/ teensy-holder-length 2)))
+(def teensy-holder-top-length 14)
 (def teensy-holder-top-offset (- 1 (/ teensy-holder-top-length 2)))
 
 (def teensy-holder 
@@ -563,16 +563,16 @@
                (translate [(/ teensy-pcb-thickness 2) teensy-holder-offset (- -1.5 (/ teensy-width 2))]))
           (->> (cube 4 teensy-holder-length 4)
                (translate [(+ 2 teensy-pcb-thickness) teensy-holder-offset (-  -1 (/ teensy-width 2))]))
-          (->> (cube teensy-pcb-thickness teensy-top-holder-length 3)
+          (->> (cube teensy-pcb-thickness teensy-holder-top-length 3)
                (translate [(/ teensy-pcb-thickness 2) teensy-holder-top-offset (+ 1.5 (/ teensy-width 2))]))
-          (->> (cube 4 teensy-top-holder-length 4)
+          (->> (cube 4 teensy-holder-top-length 4)
                (translate [(+ 2 teensy-pcb-thickness) teensy-holder-top-offset (+ 1 (/ teensy-width 2))]))
            ))))
 
 (def usb-cutout
-  (let [hole-height 6.2
+  (let [hole-height 7.5
         side-radius (/ hole-height 2)
-        hole-width 10.75        
+        hole-width 12
         side-cylinder (->> (cylinder side-radius teensy-length)
                            (with-fn 20)
                            (translate [(/ (- hole-width hole-height) 2) 0 0]))]
@@ -582,8 +582,11 @@
          (rotate (/ π 2) [0 1 0])
          (on-wall-place 0 teensy-vertical-offset))))
 
+(def usb-cutout
+  (on-wall-place 0 teensy-vertical-offset (->> (cube 9 30 12)
+                                               (translate [-1 10 0]))))
 
-(defn hex-spacer [column row radius height] 
+(defn screw-insert [column row bottom-radius top-radius height] 
   (let [position (key-position column row [0 0 0])
         column-offset (/ mount-width 2)
         row-offset    (/ mount-height 2)
@@ -594,29 +597,28 @@
         is-vertical   (or shift-left shift-right)
         col-angle     (+ (* β (- centercol column)) (/ π 12))
         row-angle     (* α (- row centerrow))]
-    (->> (union (cylinder radius height)
-                (translate [0 0 (/ height 2)] (sphere radius)))
-         (rotate (if is-vertical (/ π 6) 0) [0 0 1])
+    (->> (union (cylinder [bottom-radius top-radius] height)
+                (translate [0 0 (/ height 2)] (sphere top-radius)))
          (translate [(first position) (second position) (/ height 2)])
          (translate [(* (if shift-right 1 (if shift-left -1 0)) column-offset)
                      (* (if shift-up    1 (if shift-down -1 0)) row-offset)
                      0])
          (translate [(* wall-offset (Math/sin col-angle))
                      (* wall-offset (Math/sin row-angle))
-                     0])
-         (with-fn 6))))
+                     0]))))
 
-(defn hex-spacer-shapes [radius height]
-  (union (hex-spacer 0 0         radius height)
-         (hex-spacer 0 cornerrow radius height)
-         (hex-spacer 3 lastrow   radius height)
-         (hex-spacer 3 0         radius height)
-        ;  (hex-spacer lastcol (dec cornerrow) radius height)
+(defn screw-insert-shapes [bottom-radius top-radius height]
+  (union (screw-insert 0 0         bottom-radius top-radius height)
+         (screw-insert 0 cornerrow bottom-radius top-radius height)
+         (screw-insert 3 lastrow   bottom-radius top-radius height)
+         (screw-insert 3 0         bottom-radius top-radius height)
+        ;  (screw-insert lastcol (dec cornerrow) radius height)
          ))
-(def hex-spacer-height 6.4)
-(def hex-spacer-radius (/ 5.9 2))
-(def hex-spacer-holes  (hex-spacer-shapes hex-spacer-radius hex-spacer-height))
-(def hex-spacer-outers (hex-spacer-shapes (+ hex-spacer-radius 1.6) (+ hex-spacer-height 1.6)))
+(def screw-insert-height 3.8)
+(def screw-insert-bottom-radius (/ 5.31 2))
+(def screw-insert-top-radius (/ 5.1 2))
+(def screw-insert-holes  (screw-insert-shapes screw-insert-bottom-radius screw-insert-top-radius screw-insert-height))
+(def screw-insert-outers (screw-insert-shapes (+ screw-insert-bottom-radius 1.6) (+ screw-insert-top-radius 1.6) (+ screw-insert-height 1.6)))
 
 
 (spit "things/right.scad"
@@ -626,13 +628,13 @@
                     connectors
                     thumb
                     thumb-connectors
-                    (difference (union case-walls hex-spacer-outers) 
+                    (difference (union case-walls 
+                                       screw-insert-outers 
+                                       (if (= nrows 4) teensy-holder)) 
                                 rj9-space 
                                 usb-cutout 
-                                hex-spacer-holes)
+                                screw-insert-holes)
                     rj9-holder
-                    (if (= nrows 4) teensy-holder)
-                    
                     ; thumbcaps
                     ; caps
                     )
@@ -643,12 +645,12 @@
 
 (spit "things/test.scad"
       (write-scad (intersection (translate [29 -5 0] (cube 30 30 30))
-                   (difference (union case-walls hex-spacer-outers) 
-                               hex-spacer-holes)
+                   (difference (union case-walls screw-insert-outers) 
+                               screw-insert-holes)
                    )))
 
 ; (spit "things/test.scad"
-;       (write-scad hex-spacer-holes))
+;       (write-scad screw-insert-holes))
 
 ; (spit "things/test-half.scad"
 ;       (write-scad (difference 
@@ -657,10 +659,10 @@
 ;                     connectors
 ;                     thumb
 ;                     thumb-connectors
-;                     (difference (union case-walls hex-spacer-outers) 
+;                     (difference (union case-walls screw-insert-outers) 
 ;                                 ; rj9-space 
 ;                                 usb-cutout 
-;                                 hex-spacer-holes)
+;                                 screw-insert-holes)
 ;                     ; rj9-holder
 ;                     ; (if (= nrows 4) teensy-holder)
 ;                    )
