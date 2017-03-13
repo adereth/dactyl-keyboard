@@ -32,7 +32,7 @@
 
 (def thumb-offsets [6 -3 7])
 
-(def keyboard-z-offset  4)              ; controls height; original=24
+(def keyboard-z-offset  9)              ; controls height; original=24
 
 (def extra-width 2.5)                   ; extra space between the base of keys; original= 2
 (def extra-height 1.0)                  ; origin= 1/2
@@ -450,7 +450,7 @@
        (translate [0 0 (/ height 2)])))
 
 (defn bottom-hull [& p]
-  (hull p (bottom 10.001 p)))
+  (hull p (bottom 0.001 p)))
 
 (def wall-offset -15)
 
@@ -532,7 +532,7 @@
            (translate [0 (/ mount-height 2) wall-offset])
            ))))
 
-(def rj9-vertical-offset (- (last (key-position 0 0 [0 (/ mount-height 2) 0])) 40))
+(def rj9-vertical-offset (- (last (key-position 0 0 [0 (/ mount-height 2) 0])) 35))
 (def rj9-cube   (cube 14.78 13 22.38))
 (def rj9-space  (on-wall-place 1 rj9-vertical-offset rj9-cube))
 (def rj9-holder (on-wall-place 1 rj9-vertical-offset 
@@ -540,28 +540,32 @@
                               (union (translate [0 2 0] (cube 10.78  9 18.38))
                                      (translate [0 0 5] (cube 10.78 13  5))))))
 
+(def teensy-vertical-offset (+ rj9-vertical-offset 10))
 (def teensy-width 20)  
 (def teensy-height 12)
 (def teensy-length 33)
 (def teensy2-length 53)
 (def teensy-pcb-thickness 1.6) 
 (def teensy-offset-height 5)
-(def teensy-vertical-offset )
+(def teensy-holder-length 73)
+(def teensy-holder-offset (- 3 (/ teensy-holder-length 2)))
+(def teensy-holder-top-length 20)
+(def teensy-holder-top-offset (- 3 (/ teensy-holder-top-length 2)))
 
 (def teensy-holder 
-    (on-wall-place 0 rj9-vertical-offset
+    (on-wall-place 0 teensy-vertical-offset
       (translate [-5 0 0] 
         (union 
-          (->> (cube 3 (* 1.2 teensy2-length) (+ 6 teensy-width))
-               (translate [-1.5 -30 0]))
-          (->> (cube teensy-pcb-thickness (* 1.2 teensy2-length) 3)
-               (translate [(/ teensy-pcb-thickness 2) -30 (- -1.5 (/ teensy-width 2))]))
-          (->> (cube 4 (* 1.2 teensy2-length) 4)
-               (translate [(+ 2 teensy-pcb-thickness) -30 (-  -1 (/ teensy-width 2))]))
-          (->> (cube teensy-pcb-thickness (* 0.2 teensy2-length) 3)
-               (translate [(/ teensy-pcb-thickness 2) (+ (* 0.5 teensy2-length) -30) (+ 1.5 (/ teensy-width 2))]))
-          (->> (cube 4 (* 0.2 teensy2-length) 4)
-               (translate [(+ 2 teensy-pcb-thickness) (+ (* 0.5 teensy2-length) -30) (+  1 (/ teensy-width 2))]))
+          (->> (cube 3 teensy-holder-length (+ 6 teensy-width))
+               (translate [-1.5 teensy-holder-offset 0]))
+          (->> (cube teensy-pcb-thickness teensy-holder-length 3)
+               (translate [(/ teensy-pcb-thickness 2) teensy-holder-offset (- -1.5 (/ teensy-width 2))]))
+          (->> (cube 4 teensy-holder-length 4)
+               (translate [(+ 2 teensy-pcb-thickness) teensy-holder-offset (-  -1 (/ teensy-width 2))]))
+          (->> (cube teensy-pcb-thickness teensy-top-holder-length 3)
+               (translate [(/ teensy-pcb-thickness 2) teensy-holder-top-offset (+ 1.5 (/ teensy-width 2))]))
+          (->> (cube 4 teensy-top-holder-length 4)
+               (translate [(+ 2 teensy-pcb-thickness) teensy-holder-top-offset (+ 1 (/ teensy-width 2))]))
            ))))
 
 (def usb-cutout
@@ -575,7 +579,7 @@
                (mirror [-1 0 0] side-cylinder))
          (rotate (/ π 2) [1 0 0])
          (rotate (/ π 2) [0 1 0])
-         (on-wall-place 0 rj9-vertical-offset))))
+         (on-wall-place 0 teensy-vertical-offset))))
 
 
 (defn hex-spacer [column row radius height] 
@@ -606,18 +610,13 @@
          (hex-spacer 0 cornerrow radius height)
          (hex-spacer 3 lastrow   radius height)
          (hex-spacer 3 0         radius height)
-         (hex-spacer lastcol (dec cornerrow) radius height)
+        ;  (hex-spacer lastcol (dec cornerrow) radius height)
          ))
-(def hex-spacer-height 10)
+(def hex-spacer-height 6.4)
 (def hex-spacer-radius (/ 5.9 2))
 (def hex-spacer-holes  (hex-spacer-shapes hex-spacer-radius hex-spacer-height))
 (def hex-spacer-outers (hex-spacer-shapes (+ hex-spacer-radius 1.6) (+ hex-spacer-height 1.6)))
 
-
-;; teensy info
-; base width - 18
-; height - 1.45
-; 
 
 (spit "things/right.scad"
       (write-scad (difference 
@@ -633,10 +632,11 @@
                     rj9-holder
                     (if (= nrows 4) teensy-holder)
                     
-                    thumbcaps
-                    caps
+                    ; thumbcaps
+                    ; caps
                     )
                    (translate [0 0 -20] (cube 350 350 40)) 
+                  ;  (translate [0 0 -50] (cube 5 5 20)) 
                   )))
                    
 
@@ -646,22 +646,22 @@
                                hex-spacer-holes)
                    )))
 
-(spit "things/test.scad"
-      (write-scad hex-spacer-holes))
+; (spit "things/test.scad"
+;       (write-scad hex-spacer-holes))
 
-(spit "things/test-half.scad"
-      (write-scad (difference 
-                   (union
-                    key-holes
-                    connectors
-                    thumb
-                    thumb-connectors
-                    (difference (union case-walls hex-spacer-outers) 
-                                ; rj9-space 
-                                usb-cutout 
-                                hex-spacer-holes)
-                    ; rj9-holder
-                    ; (if (= nrows 4) teensy-holder)
-                   )
-                   (translate [0 0 -5] (cube 350 350 40)) 
-                  )))
+; (spit "things/test-half.scad"
+;       (write-scad (difference 
+;                    (union
+;                     key-holes
+;                     connectors
+;                     thumb
+;                     thumb-connectors
+;                     (difference (union case-walls hex-spacer-outers) 
+;                                 ; rj9-space 
+;                                 usb-cutout 
+;                                 hex-spacer-holes)
+;                     ; rj9-holder
+;                     ; (if (= nrows 4) teensy-holder)
+;                    )
+;                    (translate [0 0 -5] (cube 350 350 40)) 
+;                   )))
