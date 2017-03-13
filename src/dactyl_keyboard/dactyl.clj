@@ -14,7 +14,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;
 
 (def nrows 4)
-(def ncols 6)
+(def ncols 5)
 
 (def α (/ π 12))                        ; curvature of the columns
 (def β (/ π 36))                        ; curvature of the rows
@@ -22,17 +22,21 @@
 (def centercol 3)                       ; controls left-right tilt / tenting (higher number is more tenting)
 (def orthographic-x (> nrows 5))        ; for larger number of rows don't curve them in as much
 ; (def orthographic-x true)             ; controls curvature of rows
-(def maltron-style true)                ; use fixed angles for columns
+(def maltron-style false)                ; use fixed angles for columns
 (def maltron-angles [(deg2rad 10) (deg2rad 10) 0 0 0 (deg2rad -15) (deg2rad -15)])  ; starting point: http://patentimages.storage.googleapis.com/EP0219944A2/imgf0002.png 
 
 (defn column-offset [column] (cond
   (= column 2) [0 2.82 -4.5]
-  (>= column 4) [0 -5.8 5.64]
+  (>= column 4) [0 -12 5.64]           ; original [0 -5.8 5.64]
   :else [0 0 0]))
 
 (def thumb-offsets [6 -3 7])
 
-(def keyboard-z-offset 24)              ; controls height
+(def keyboard-z-offset  24)              ; controls height; original=24
+
+(def extra-width 2.5)                   ; extra space between the base of keys; original= 2
+(def extra-height 1.0)                  ; origin= 1/2
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;; General variables ;;
@@ -128,10 +132,10 @@
 (def rows (range 0 nrows))
 
 (def cap-top-height (+ plate-thickness sa-profile-key-height))
-(def row-radius (+ (/ (/ (+ mount-height 1/2) 2)
+(def row-radius (+ (/ (/ (+ mount-height extra-height) 2)
                       (Math/sin (/ α 2)))
                    cap-top-height))
-(def column-radius (+ (/ (/ (+ mount-width 2.0) 2)
+(def column-radius (+ (/ (/ (+ mount-width extra-width) 2)
                          (Math/sin (/ β 2)))
                       cap-top-height))
 (def column-x-delta (+ -1 (- (* column-radius (Math/sin β)))))
@@ -210,7 +214,7 @@
          (map + [0 0 24]))))
 
 ; (pr (rotate-around-y π [10 0 1]))
-; (pr (key-position 1 cornerrow [(/ mount-width 2) (- (/ mount-height 2)) 0]))
+(pr (key-position 1 cornerrow [(/ mount-width 2) (- (/ mount-height 2)) 0]))
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; Web Connectors ;;
@@ -274,19 +278,25 @@
 
 (defn thumb-tr-place [shape]
   (->> shape
+      ;  (rotate (deg2rad  10) [1 0 0])
+      ;  (rotate (deg2rad -23) [0 1 0])
+      ;  (rotate (deg2rad  -3) [0 0 1])
        (rotate (deg2rad  10) [1 0 0])
        (rotate (deg2rad -23) [0 1 0])
-       (rotate (deg2rad  -3) [0 0 1])
+       (rotate (deg2rad  10) [0 0 1])
        (translate thumborigin)
-       (translate [-10 -16 0])
+       (translate [-12 -16 3])
        ))
 (defn thumb-tl-place [shape]
   (->> shape
+      ;  (rotate (deg2rad  10) [1 0 0])
+      ;  (rotate (deg2rad -23) [0 1 0])
+      ;  (rotate (deg2rad  -3) [0 0 1])
        (rotate (deg2rad  10) [1 0 0])
        (rotate (deg2rad -23) [0 1 0])
-       (rotate (deg2rad  -3) [0 0 1])
+       (rotate (deg2rad  10) [0 0 1])
        (translate thumborigin)
-       (translate [-30 -15 -2])))
+       (translate [-32 -15 -2])))
 (defn thumb-mr-place [shape]
   (->> shape
        (rotate (deg2rad  -6) [1 0 0])
@@ -610,21 +620,24 @@
 ; 
 
 (spit "things/right.scad"
-      (write-scad (union
-                   key-holes
-                   connectors
-                   thumb
-                   thumb-connectors
-                  ;  (difference (union case-walls hex-spacer-outers) 
-                  ;              rj9-space 
-                  ;              usb-cutout 
-                  ;              hex-spacer-holes)
-                   rj9-holder
-                   (if (= nrows 4) teensy-holder)
-                   
-                   thumbcaps
-                   caps
-                   )))
+      (write-scad (difference 
+                   (union
+                    key-holes
+                    connectors
+                    thumb
+                    thumb-connectors
+                    (difference (union case-walls hex-spacer-outers) 
+                                rj9-space 
+                                usb-cutout 
+                                hex-spacer-holes)
+                    rj9-holder
+                    (if (= nrows 4) teensy-holder)
+                    
+                    thumbcaps
+                    caps
+                    )
+                   (translate [0 0 -20] (cube 350 350 40)) 
+                  )))
                    
 
 (spit "things/test.scad"
@@ -635,3 +648,20 @@
 
 (spit "things/test.scad"
       (write-scad hex-spacer-holes))
+
+(spit "things/test-half.scad"
+      (write-scad (difference 
+                   (union
+                    key-holes
+                    connectors
+                    thumb
+                    thumb-connectors
+                    (difference (union case-walls hex-spacer-outers) 
+                                ; rj9-space 
+                                usb-cutout 
+                                hex-spacer-holes)
+                    ; rj9-holder
+                    ; (if (= nrows 4) teensy-holder)
+                   )
+                   (translate [0 0 -5] (cube 350 350 40)) 
+                  )))
