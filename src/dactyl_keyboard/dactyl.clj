@@ -548,10 +548,10 @@
 (def teensy2-length 53)
 (def teensy-pcb-thickness 1.6) 
 (def teensy-offset-height 5)
-(def teensy-holder-length 73)
-(def teensy-holder-offset (- 3 (/ teensy-holder-length 2)))
+(def teensy-holder-length 69)
+(def teensy-holder-offset (- 1 (/ teensy-holder-length 2)))
 (def teensy-holder-top-length 20)
-(def teensy-holder-top-offset (- 3 (/ teensy-holder-top-length 2)))
+(def teensy-holder-top-offset (- 1 (/ teensy-holder-top-length 2)))
 
 (def teensy-holder 
     (on-wall-place 0 teensy-vertical-offset
