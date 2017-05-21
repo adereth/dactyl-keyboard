@@ -30,9 +30,9 @@
   - The main controller (right half)
     - A Teensy 2.0, I got that one from here: https://www.pjrc.com/store/teensy.html
   - The chip, connectors and cable to give life to the left half
-    - TTRS cable and jacks
-      - Got my TTRS cable from here: http://www.digikey.de/product-search/de?keywords=839-1257-ND
-      - Got my TTRS jacks from here: http://www.digikey.de/product-search/de?keywords=CP-43514-ND
+    - TRRS cable and jacks
+      - Got my TRRS cable from here: http://www.digikey.de/product-search/de?keywords=839-1257-ND
+      - Got my TRRS jacks from here: http://www.digikey.de/product-search/de?keywords=CP-43514-ND
     - MCP23018 16 bit IO Expander
       - Got mine from here: http://www.digikey.de/product-search/de?keywords=MCP23018-E%2FSP-ND
 
@@ -45,7 +45,7 @@
   | teensy 2.0                        |   30 |
   | switches                          |   60 |
   | usb cable                         |   10 |
-  | IO Expander, TTRS jacks and cable |   30 |
+  | IO Expander, TRRS jacks and cable |   30 |
   |-----------------------------------+------|
   | overall cost                      |  300 |
   #+TBLFM: @9$2=vsum(@2$2..@8$2)
@@ -217,7 +217,7 @@
       in hexadecimal) which makes great sence, since the MCP is left to the Teensy and we read from
       left to right.
     - When debugging this and using the ergodox-firmware, both sides have to be wired completely
-      and actually with the TTRS connected, dont expect the keyboard to work before that. The reason being is how
+      and actually with the TRRS connected, dont expect the keyboard to work before that. The reason being is how
       the ergodox-firmware stops completely if either the Teensy or the MCP weren't initiated
       properly.
     - In the circuit-diagram the columns on the left side (MCP side) actually go from GPA5 to INTA
@@ -225,7 +225,7 @@
     - The LEDs are handy for debugging, definately go ahead and connect those. When the keyboard
       starts successfully two of the LEDs light up shortly.
     - From the Teensy over to the MCP go exactly 4 connections. The blue, the red and the two green
-      ones. This is done using the TTRS jacks and cable.
+      ones. This is done using the TRRS jacks and cable.
     - Yes, the connection from B4 to VCC doesnt seem to make any sense, but the B4 port actually
       gets used directly in the ergodox-firmware, so just connect those connections that make no
       sense on first sight and either dont question it or find out why this is necessary by going
