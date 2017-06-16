@@ -220,9 +220,7 @@
       and actually with the TRRS connected, dont expect the keyboard to work before that. The reason being is how
       the ergodox-firmware stops completely if either the Teensy or the MCP weren't initiated
       properly.
-    - In the circuit-diagram the columns on the left side (MCP side) actually go from GPA5 to INTA
-      (TODO: Update the circuit diagram and get rid of this point)
-    - The LEDs are handy for debugging, definately go ahead and connect those. When the keyboard
+    - The LEDs are handy for debugging, definitely go ahead and connect those. When the keyboard
       starts successfully two of the LEDs light up shortly.
     - From the Teensy over to the MCP go exactly 4 connections. The blue, the red and the two green
       ones. This is done using the TRRS jacks and cable.
