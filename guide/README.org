@@ -142,7 +142,8 @@
 
     [[teensy-1.jpg]]
 
-    Some interesting pull up 10k resistor business here... (TODO add a small diagram and notes)
+    The two 2.2kΩ (Red Red Red Gold) pull-up resistors ensure the switches give a clear reading when open.
+    [Read more about pull-up resistors here](https://learn.sparkfun.com/tutorials/pull-up-resistors).
 
     [[teensy-2-fuxor-reziztorrs.jpg]]
 
