@@ -157,7 +157,6 @@
 
     [[hotglue-left-hand.jpg]]
 
-    That's all for now, this guide will improve over time! (TODO!)
 ** Route 2: Dactyl Hand-Wiring Guide
 *** Step 1: Creating the rows
     Using the copper wire you solder each row together, notice how the thumb-part gets its own
