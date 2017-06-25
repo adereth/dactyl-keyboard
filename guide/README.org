@@ -142,7 +142,7 @@
 
     [[teensy-1.jpg]]
 
-    The two 2.2kΩ (Red Red Red Gold) pull-up resistors ensure the switches give a clear reading when open.
+    The two 2.2kΩ (Red Red Red Gold) pull-up resistors ensure a clear signal between the USB controller and the I/O expander.
     [[https://learn.sparkfun.com/tutorials/pull-up-resistors][Read more about pull-up resistors here]].
 
     [[teensy-2-fuxor-reziztorrs.jpg]]
