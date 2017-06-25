@@ -142,7 +142,8 @@
 
     [[teensy-1.jpg]]
 
-    Some interesting pull up 10k resistor business here... (TODO add a small diagram and notes)
+    The two 2.2kΩ (Red Red Red Gold) pull-up resistors ensure a clear signal between the USB controller and the I/O expander.
+    [[https://learn.sparkfun.com/tutorials/pull-up-resistors][Read more about pull-up resistors here]].
 
     [[teensy-2-fuxor-reziztorrs.jpg]]
 
