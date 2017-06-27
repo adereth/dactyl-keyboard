@@ -61,6 +61,21 @@ can upload [this cart](digikey-shopping-cart.csv).
 * TRRS Cable [this one](https://www.amazon.com/Coiled-3-5mm-Jack-Audio-Cable/dp/B019TRW4HQ)
   worked for me, but it's a matter of taste and how much distance you need.
 
+## Load QMK on your Teensy
+
+Plug your teensy into a USB port and head over to
+[QMK's Ergodox Directory](https://github.com/qmk/qmk_firmware/tree/master/keyboards/ergodox)
+and build the default firmware.
+
+```shell
+make default
+teensy_loader_cli -mmcu=atmega32u4 -v -w ../../ergodox_ez_default.hex
+```
+
+`-w` is now waiting for you to hit the reset button, and when you do, it'll
+flash the firmware. Now you'll be able to test it as soon as you're done wiring
+the right half.
+
 ## Wiring up the Matrix
 
 The firmware you choose will determine the wiring of the keyboard. Since the
@@ -98,6 +113,9 @@ up with 14 columns. Physically, it looks like this:
 Look at those colors, they'll be consistent throughout this documentation,
 including the physical wire we wire it up with.
 
+Here's what it looks like with row as outlined boxes and columns as solid ones.
+![](dactyl-wiring-schematic.png)
+
 ### Rows
 
 You don't have to decide how to connect the rows to the Teensy or MCP yet. Just
@@ -121,7 +139,7 @@ The columns need to be wired with diodes. You can probably wire the entire
 column with the diode stems, but I chose to add some wire segments so it would
 look clearer for this guide.
 
-![](dactyl-left-wiring.jpg)
+![](dactyl-right-wiring.jpg)
 
 The diodes need the black bar facing away from the key. The other guides
 disagree, but they don't use QMK.
@@ -240,6 +258,140 @@ run GND to the fourth terminal.
 
 ![](trrs-diagram.jpg)
 
+Be careful! The GND and Vcc pins on the TRRS jack like to casually fall out as
+you're working. I image this isn't a problem when using them as intended on
+PCBs, but in this case, once it's soldered, a little electrical tape never hurt
+anyone.
+
+### LEDs
+
+We talked about choosing them before, but here's how to wire them. You can make
+them all do what you want in your QMK keymap at will.
+
+I put them in the top rightmost MX switches, but I'd love to find a place to
+incorporate them directly in the case.
+
+Here's what that looked like:
+![](dactyl-bare-led.jpg)
+
+And with a cap:
+![](dactyl-capped-led.jpg)
+
+I did my best here to try and isolate the Green, Brown and Blue wires heading
+from the Teensy to each LED, the 220Ω resistors and the Black wire to the Ground
+terminal via the TRRS pin.
+
+| LED | Wire Color | Teensy Pin |
+|-----|------------|------------|
+| 1   | Green      | PB5        |
+| 2   | Brown      | PB6        |
+| 3   | Blue       | PB7        |
+
+![](dactyl-led-wiring.jpg)
+
 ## Wiring The Left Half
 
-### Wiring the I/O Expander
+I wired the left half to be a mirror image of the right, with the mirror between
+the two halves. That means the rows are the same, but the column are both purple
+on the outside, and red on the inside.
+
+Here's the color coding and pin outs for the left half:
+
+| Row     | Wire Color | MCP23018 Pin |
+|---------|------------|--------------|
+| 0       | Yellow     | GPB0         |
+| 1       | Orange     | GPB1         |
+| 2       | Green      | GPB2         |
+| 3       | Brown      | GPB3         |
+| 4       | Blue       | GPB4         |
+| 5       | Purple     | GPB5         |
+
+| Column | Wire Color | Teensy Pin |
+|--------|------------|------------|
+| 0      | Purple     | GPA6       |
+| 1      | Blue       | GPA5       |
+| 2      | Brown      | GPA4       |
+| 3      | Green      | GPA3       |
+| 4      | Orange     | GPA2       |
+| 5      | Yellow     | GPA1       |
+| 6      | Red        | GPA0       |
+
+And here's the left half wired up:
+
+![](dactyl-left-wiring.jpg)
+
+The rules are pretty much the same as the right half. Black bar on the diode
+facing away from the switch.
+
+### Connecting to the MCP23018
+
+I am really too entertained that the company that makes this microchip is called
+Microchip, which got me into the habit of calling the MCP "microchip by
+Microchip". The big takeaway here is that it's a microchip, and not a cool dev
+board like the Teensy. What this means for you is soldering a bunch of terribly
+tiny wires to terribly tiny pins.
+
+Hand wiring microchip is incredibly frustrating. I broke a pin off my first one,
+pretty much rendering it useless. Fortunately, there's an easier way.
+
+I still wound up soldering the connections from the TRRS jack to the MCP. There
+were also some pins that I connected with short wires.
+
+* Vss -> ADDR -> TRRS
+* RESET -> Vdd -> TRRS
+* SCL -> TRRS
+* SDA -> TRRS
+
+All that's left are the rows and columns. I trimmed a 28pin IC socket down to a
+7pin and 6pin single row socket, and soldered the matrix to those. Then I was
+able to clip them on to the right spots on the MCP.ß
+
+Here the colums clip right on:
+![](dactyl-mcp-ic-socket.jpg)
+
+And the rows too: I know I labeled the rows incorrectly, I was working off the
+old guide which numbers rows differently.
+
+![](dactyl-mcp-ic-socket2.jpg)
+
+Once they're plugged in, I'd lock down the whole situation with some electrical tape.
+
+The left side requires more precise work, but it's a simpler wiring job.
+
+## Closing up the case
+
+### Left side
+
+The positioning of the MCP23018 doesn't really matter as long as it fits in the
+notch in the case bottom. The important thing is making sure the TRRS jack is in
+the right place. It takes a little trial and error with the two-sided tape, but
+once it's locked down, you're good.
+
+I used screws with the flattest heads I could find and nuts to match. Don't
+over-tighten, especially on FDM printed cases. If the infill is too low, the
+case bottom will just buckle.
+
+### Right side
+
+Placing the TRRS jack on the right side will be pretty much the same as the
+left.
+
+The top case I built with had no mounting solution for the teensy, so there was
+a lot of trial and error there. The newer models have a little notch to attach
+the Teensy to, which I assume will have it line up perfectly with the hole for
+the Mini-USB, but I haven't tested that.
+
+In the end, I shaved down a short USB extension cable, plugged it in to the
+Teensy and double-sided taped it to the outside of the case.
+
+![](dactyl-usb-shave.jpg)
+
+![](dactyl-usb-extender.jpg)
+
+One thing I did, is burn a little hole through the bottom so I have access to
+the Teensy's reset button for firmware flashing.
+
+
+## Done!
+
+![](dactyl-finished.jpg)
