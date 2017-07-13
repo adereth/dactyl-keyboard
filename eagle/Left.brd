@@ -147,9 +147,9 @@
 <wire x1="18.72" y1="49.52" x2="1.27" y2="49.52" width="0" layer="20"/>
 <wire x1="1.27" y1="49.52" x2="1.27" y2="1.27" width="0" layer="20"/>
 <text x="12.7" y="25.4" size="1.778" layer="26" font="vector" rot="MR270">Dactyl L
-v0.2 @joedevivo</text>
+v0.3 @joedevivo</text>
 <text x="7.62" y="25.4" size="1.778" layer="25" font="vector" rot="R270">Dactyl L
-v0.2 @joedevivo</text>
+v0.3 @joedevivo</text>
 </plain>
 <libraries>
 <library name="microchip-23018">
@@ -573,10 +573,10 @@ Please make sure your boards conform to these design rules.</description>
 <attribute name="OC_FARNELL" value="" x="10.16" y="19.05" size="1.778" layer="28" rot="MR270" display="off"/>
 <attribute name="OC_NEWARK" value="98M1583" x="10.16" y="19.05" size="1.778" layer="28" rot="MR270" display="off"/>
 </element>
-<element name="J1" library="SparkFun-Connectors" package="1X06" value="Rows" x="16.51" y="27.94" smashed="yes" rot="R270">
-<attribute name="NAME" x="17.907" y="29.21" size="0.6096" layer="27" font="vector" ratio="20" rot="R270"/>
-<attribute name="PROD_ID" value="CONN-08437" x="16.51" y="27.94" size="1.778" layer="27" rot="R270" display="off"/>
-<attribute name="VALUE" x="14.478" y="29.21" size="0.6096" layer="25" font="vector" ratio="20" rot="R270"/>
+<element name="J1" library="SparkFun-Connectors" package="1X06" value="Rows" x="16.51" y="30.48" smashed="yes" rot="R270">
+<attribute name="NAME" x="17.907" y="31.75" size="0.6096" layer="27" font="vector" ratio="20" rot="R270"/>
+<attribute name="PROD_ID" value="CONN-08437" x="16.51" y="30.48" size="1.778" layer="27" rot="R270" display="off"/>
+<attribute name="VALUE" x="14.478" y="31.75" size="0.6096" layer="25" font="vector" ratio="20" rot="R270"/>
 </element>
 <element name="J2" library="SparkFun-Connectors" package="1X07" value="Columns" x="3.81" y="15.24" smashed="yes" rot="R90">
 <attribute name="NAME" x="2.413" y="13.97" size="0.6096" layer="27" font="vector" ratio="20" rot="R90"/>
@@ -676,34 +676,34 @@ Please make sure your boards conform to these design rules.</description>
 <wire x1="6.35" y1="30.48" x2="3.81" y2="30.48" width="0.1524" layer="16"/>
 </signal>
 <signal name="N$12">
-<contactref element="MCP" pad="4"/>
+<contactref element="MCP" pad="3"/>
 <contactref element="J1" pad="1"/>
-<wire x1="13.97" y1="27.94" x2="16.51" y2="27.94" width="0.1524" layer="16"/>
+<wire x1="16.51" y1="30.48" x2="13.97" y2="30.48" width="0.1524" layer="1"/>
 </signal>
 <signal name="N$13">
-<contactref element="MCP" pad="5"/>
+<contactref element="MCP" pad="4"/>
 <contactref element="J1" pad="2"/>
-<wire x1="13.97" y1="25.4" x2="16.51" y2="25.4" width="0.1524" layer="16"/>
+<wire x1="16.51" y1="27.94" x2="13.97" y2="27.94" width="0.1524" layer="1"/>
 </signal>
 <signal name="N$14">
-<contactref element="MCP" pad="6"/>
+<contactref element="MCP" pad="5"/>
 <contactref element="J1" pad="3"/>
-<wire x1="13.97" y1="22.86" x2="16.51" y2="22.86" width="0.1524" layer="16"/>
+<wire x1="16.51" y1="25.4" x2="13.97" y2="25.4" width="0.1524" layer="1"/>
 </signal>
 <signal name="N$15">
-<contactref element="MCP" pad="7"/>
+<contactref element="MCP" pad="6"/>
 <contactref element="J1" pad="4"/>
-<wire x1="13.97" y1="20.32" x2="16.51" y2="20.32" width="0.1524" layer="16"/>
+<wire x1="16.51" y1="22.86" x2="13.97" y2="22.86" width="0.1524" layer="1"/>
 </signal>
 <signal name="N$16">
-<contactref element="MCP" pad="8"/>
+<contactref element="MCP" pad="7"/>
 <contactref element="J1" pad="5"/>
-<wire x1="13.97" y1="17.78" x2="16.51" y2="17.78" width="0.1524" layer="16"/>
+<wire x1="16.51" y1="20.32" x2="13.97" y2="20.32" width="0.1524" layer="1"/>
 </signal>
 <signal name="N$17">
-<contactref element="MCP" pad="9"/>
+<contactref element="MCP" pad="8"/>
 <contactref element="J1" pad="6"/>
-<wire x1="13.97" y1="15.24" x2="16.51" y2="15.24" width="0.1524" layer="16"/>
+<wire x1="16.51" y1="17.78" x2="13.97" y2="17.78" width="0.1524" layer="1"/>
 </signal>
 </signals>
 </board>

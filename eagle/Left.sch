@@ -1903,7 +1903,7 @@ This footprint was designed to help hold the alignment of a through-hole compone
 <instance part="U$1" gate="G$1" x="-12.7" y="165.1"/>
 <instance part="MCP" gate="G$1" x="25.4" y="162.56"/>
 <instance part="J2" gate="G$1" x="48.26" y="177.8" rot="R180"/>
-<instance part="J1" gate="G$1" x="48.26" y="152.4" rot="R180"/>
+<instance part="J1" gate="G$1" x="58.42" y="154.94" rot="R180"/>
 </instances>
 <busses>
 </busses>
@@ -1999,53 +1999,49 @@ This footprint was designed to help hold the alignment of a through-hole compone
 </net>
 <net name="N$12" class="0">
 <segment>
-<pinref part="MCP" gate="G$1" pin="GPB1"/>
+<pinref part="MCP" gate="G$1" pin="GPB0"/>
 <pinref part="J1" gate="G$1" pin="1"/>
-<wire x1="38.1" y1="157.48" x2="43.18" y2="157.48" width="0.1524" layer="91"/>
+<wire x1="38.1" y1="160.02" x2="53.34" y2="160.02" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$13" class="0">
 <segment>
-<pinref part="MCP" gate="G$1" pin="GPB2"/>
+<pinref part="MCP" gate="G$1" pin="GPB1"/>
 <pinref part="J1" gate="G$1" pin="2"/>
-<wire x1="38.1" y1="154.94" x2="43.18" y2="154.94" width="0.1524" layer="91"/>
+<wire x1="38.1" y1="157.48" x2="53.34" y2="157.48" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$14" class="0">
 <segment>
-<pinref part="MCP" gate="G$1" pin="GPB3"/>
+<pinref part="MCP" gate="G$1" pin="GPB2"/>
 <pinref part="J1" gate="G$1" pin="3"/>
-<wire x1="38.1" y1="152.4" x2="43.18" y2="152.4" width="0.1524" layer="91"/>
+<wire x1="38.1" y1="154.94" x2="53.34" y2="154.94" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$15" class="0">
 <segment>
-<pinref part="MCP" gate="G$1" pin="GPB4"/>
+<pinref part="MCP" gate="G$1" pin="GPB3"/>
 <pinref part="J1" gate="G$1" pin="4"/>
-<wire x1="38.1" y1="149.86" x2="43.18" y2="149.86" width="0.1524" layer="91"/>
+<wire x1="38.1" y1="152.4" x2="53.34" y2="152.4" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$16" class="0">
 <segment>
-<pinref part="MCP" gate="G$1" pin="GPB5"/>
+<pinref part="MCP" gate="G$1" pin="GPB4"/>
 <pinref part="J1" gate="G$1" pin="5"/>
-<wire x1="38.1" y1="147.32" x2="43.18" y2="147.32" width="0.1524" layer="91"/>
+<wire x1="38.1" y1="149.86" x2="53.34" y2="149.86" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$17" class="0">
 <segment>
-<pinref part="MCP" gate="G$1" pin="GPB6"/>
+<pinref part="MCP" gate="G$1" pin="GPB5"/>
 <pinref part="J1" gate="G$1" pin="6"/>
-<wire x1="38.1" y1="144.78" x2="43.18" y2="144.78" width="0.1524" layer="91"/>
+<wire x1="38.1" y1="147.32" x2="53.34" y2="147.32" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
 </sheet>
 </sheets>
-<errors>
-<approved hash="104,1,12.7,182.88,IC1,VDD,N$2,,,"/>
-<approved hash="104,1,12.7,142.24,IC1,VSS,N$1,,,"/>
-</errors>
 </schematic>
 </drawing>
 </eagle>
