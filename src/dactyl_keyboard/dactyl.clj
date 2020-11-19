@@ -259,7 +259,8 @@
          (translate [mount-width 0 0])
          (rotate (* π (- 1/4 3/16)) [0 0 1])
          (rotate (/ π 12) [1 1 0])
-         (translate [-52 -45 40]))))
+         (rotate (/ π -5/2) [-1 1 0])
+         (translate [-52 -45 30]))))
 
 (defn thumb-2x-column [shape]
   (thumb-place 0 -1/2 shape))
