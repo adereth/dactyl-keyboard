@@ -827,7 +827,7 @@
        (place (+ 1/2 0.05) thumb-front-row (translate [0 1.5 0.5] wall-sphere-bottom-front))
        (place (+ 3/2 0.05) thumb-front-row (translate [0 1 0.5] wall-sphere-bottom-front)))
      (curtain
-       (case-place 0.7 4 (translate [1 0 1] wall-sphere-bottom-front))
+       (case-place 0.7 4 (translate [1 0 1.5] wall-sphere-bottom-front))
        (place (+ 1/2 0.05) thumb-front-row (translate [0 1.5 0.5] wall-sphere-bottom-front)))
      )))
 
