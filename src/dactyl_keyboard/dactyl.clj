@@ -1331,8 +1331,7 @@
           thumb
           new-case-trimmed
           teensy-support)
-   trrs-hole-just-circle
-   screw-holes))
+   trrs-hole-just-circle))
 
 (def dactyl-top-left
   (mirror [-1 0 0]
@@ -1341,8 +1340,7 @@
                   connectors
                   thumb
                   new-case)
-           trrs-hole-just-circle
-           screw-holes)))
+           trrs-hole-just-circle)))
 
 (spit "things/switch-hole.scad"
       (write-scad single-plate))
