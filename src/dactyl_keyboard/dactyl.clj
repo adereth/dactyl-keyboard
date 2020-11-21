@@ -143,8 +143,8 @@
                           (translate [0 0 column-radius])
                           (translate column-offset))]
     (->> placed-shape
-         (rotate (/ π 12) [0 1 0])
-         (translate [0 0 13]))))
+         (rotate (/ π 10) [0 1 0])
+         (translate [0 0 22]))))
 
 (defn case-place [column row shape]
   (let [row-placed-shape (->> shape
@@ -159,8 +159,8 @@
                           (translate [0 0 column-radius])
                           (translate column-offset))]
     (->> placed-shape
-         (rotate (/ π 12) [0 1 0])
-         (translate [0 0 13]))))
+         (rotate (/ π 10) [0 1 0])
+         (translate [0 0 22]))))
 
 (def key-holes
   (apply union
@@ -257,10 +257,10 @@
          (rotate (* column β) [0 1 0])
          (translate [0 0 column-radius])
          (translate [mount-width 0 0])
-         (rotate (* π (- 1/4 3/16)) [0 0 1])
+         (rotate (* π 3/16) [0 0 1])
          (rotate (/ π 12) [1 1 0])
          (rotate (/ π -8/3) [-1 1 0])
-         (translate [-52 -45 30]))))
+         (translate [-52 -45 39]))))
 
 (defn thumb-2x-column [shape]
   (thumb-place 0 -1/2 shape))
