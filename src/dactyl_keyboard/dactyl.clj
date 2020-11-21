@@ -1367,3 +1367,6 @@
 
 (spit "things/dactyl-bottom-left-with-teensy.scad"
       (write-scad (mirror [-1 0 0] dactyl-bottom-right)))
+
+(spit "things/dactyl-top-right-preview.scad"
+      (write-scad (union dactyl-top-right caps thumbcaps)))
