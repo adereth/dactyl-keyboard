@@ -132,6 +132,7 @@
                               (translate [0 0 (- row-radius)])
                               (rotate (* α (- 2 row)) [1 0 0])
                               (translate [0 0 row-radius]))
+        column (if (>= column 5) (+ column (* (+ -4 column) 0.25)) column)
         column-offset (cond
                         (= column 2) [0 2.82 -3.0] ;;was moved -4.5
                         (>= column 4) [0 -5.8 5.64]
@@ -151,6 +152,7 @@
                               (translate [0 0 (- row-radius)])
                               (rotate (* α (- 2 row)) [1 0 0])
                               (translate [0 0 row-radius]))
+        column (if (> column 4.5) (+ column (* (+ -4.5 column) 0.5)) column)
         column-offset [0 -4.35 5.64]
         column-angle (* β (- 2 column))
         placed-shape (->> row-placed-shape
@@ -177,7 +179,7 @@
                row rows
                :when (or (not= column 0)
                          (not= row 4))]
-           (->> (sa-cap (if (= column 5) 1 1))
+           (->> (sa-cap (if (= column 5) 1.5 1))
                 (key-place column row)))))
 
 ;;;;;;;;;;;;;;;;;;;;
