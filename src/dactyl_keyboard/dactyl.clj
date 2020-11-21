@@ -1220,23 +1220,23 @@
 (def io-exp-cover (circuit-cover io-exp-width io-exp-length io-exp-height))
 (def teensy-cover (circuit-cover teensy-width teensy-length teensy-height))
 
-(def trrs-diameter 6.6)
+(def trrs-diameter 7)
 (def trrs-radius (/ trrs-diameter 2))
 (def trrs-hole-depth 13)
 
 (def trrs-hole (->> (union (cylinder trrs-radius trrs-hole-depth)
                            (->> (cube trrs-diameter (+ trrs-radius 5) trrs-hole-depth)
                                 (translate [0 (/ (+ trrs-radius 5) 2) 0])))
-                    (rotate (/ π 2) [1 0 0])
-                    (translate [0 (+ (/ mount-height 2) 4) (- trrs-radius)])
+                    (rotate (/ π 2.9) [0 1 0])
+                    (translate [(+ (/ mount-height -4) 4) 0 (- -20 trrs-radius)])
                     (with-fn 50)))
 
 (def trrs-hole-just-circle
   (->> (cylinder trrs-radius trrs-hole-depth)
-       (rotate (/ π 2) [1 0 0])
-       (translate [0 (+ (/ mount-height 2) 4) (- trrs-radius)])
+       (rotate (/ π 2.9) [0 1 0])
+       (translate [(+ (/ mount-height -4) 4) 0 (- -20 trrs-radius)])
        (with-fn 50)
-       (key-place 1/2 0)))
+       (key-place 0 3/2)))
 
 (def trrs-box-hole (->> (cube 14 14 7 )
                         (translate [0 1 -3.5])))
