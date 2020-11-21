@@ -1351,20 +1351,11 @@
 (spit "things/dactyl-top-right.scad"
       (write-scad dactyl-top-right))
 
-(spit "things/dactyl-bottom-right.scad"
-      (write-scad dactyl-bottom-right))
-
 (spit "things/dactyl-top-left.scad"
       (write-scad dactyl-top-left))
 
-(spit "things/dactyl-bottom-left.scad"
-      (write-scad dactyl-bottom-left))
-
 (spit "things/dactyl-top-left-with-teensy.scad"
       (write-scad (mirror [-1 0 0] dactyl-top-right)))
-
-(spit "things/dactyl-bottom-left-with-teensy.scad"
-      (write-scad (mirror [-1 0 0] dactyl-bottom-right)))
 
 (spit "things/dactyl-top-right-preview.scad"
       (write-scad (union dactyl-top-right caps thumbcaps)))
