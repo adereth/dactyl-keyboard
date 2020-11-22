@@ -1,7 +1,11 @@
 # The Dactyl Keyboard
 The Dactyl is a parameterized, split-hand, concave, columnar, ergonomic keyboard.
 
-<img src="https://raw.githubusercontent.com/adereth/dactyl-cave/master/resources/glamourshot.png"/>
+This is my fork of [the original Dactyl][], with rotated thumb clusters, a steeper angle, Ergodox-compatible keycaps, and a simpler one-piece chassis.
+
+[the original Dactyl]: https://github.com/adereth/dactyl-keyboard
+
+<img src="https://raw.githubusercontent.com/whitelynx/dactyl-keyboard/master/resources/preview.png"/>
 
 There's a talk about the motivation and design of the Dactyl that helps provide context for this repo:
 
