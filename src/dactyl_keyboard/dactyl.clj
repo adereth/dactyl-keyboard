@@ -1220,7 +1220,7 @@
 (def io-exp-cover (circuit-cover io-exp-width io-exp-length io-exp-height))
 (def teensy-cover (circuit-cover teensy-width teensy-length teensy-height))
 
-(def trrs-diameter 7)
+(def trrs-diameter 7.85)
 (def trrs-radius (/ trrs-diameter 2))
 (def trrs-hole-depth 13)
 
