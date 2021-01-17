@@ -414,7 +414,6 @@
 
   (union
    (thumb-layout (rotate (/ Math/PI 2) [0 0 1] single-plate))
-   (color [1 0 0] thumb-connectors)
 
    #_(thumb-place 0 -1/2 (extended-plates 2))
    #_(thumb-place 1 -1/2 double-plates)))
@@ -1308,33 +1307,9 @@
   (mirror [-1 0 0]
           (difference
            (union key-holes
-                  connectors
-                  thumb
-                  new-case)
+                  thumb)
            trrs-hole-just-circle
            screw-holes)))
 
-(comment
-  (spit "things/lightcycle-cherry-top-right.scad"
-        (write-scad dactyl-top-right))
-
-  (spit "things/lightcycle-cherry-bottom-right.scad"
-        (write-scad dactyl-bottom-right))
-
   (spit "things/lightcycle-cherry-top-left.scad"
         (write-scad dactyl-top-left))
-
-  (spit "things/lightcycle-cherry-bottom-left.scad"
-        (write-scad dactyl-bottom-left)))
-
-(spit "things/lightcycle-matias-top-right.scad"
-      (write-scad dactyl-top-right))
-
-(spit "things/lightcycle-matias-bottom-right.scad"
-      (write-scad dactyl-bottom-right))
-
-(spit "things/lightcycle-matias-top-left.scad"
-      (write-scad dactyl-top-left))
-
-(spit "things/lightcycle-matias-bottom-left.scad"
-      (write-scad dactyl-bottom-left))
